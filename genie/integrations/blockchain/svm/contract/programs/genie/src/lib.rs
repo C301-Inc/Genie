@@ -34,4 +34,13 @@ pub mod genie {
         instructions::initialize_profile(ctx, profile_bump)?;
         Ok(())
     }
+
+    pub fn initialize_inbox(
+        ctx: Context<InitializeInbox>,
+        platform: String,
+        primary_key: String,
+    ) -> Result<()> {
+        let inbox_bump = *ctx.bumps.get("inbox").unwrap();
+        Ok(())
+    }
 }
