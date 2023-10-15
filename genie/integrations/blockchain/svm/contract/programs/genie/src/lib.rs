@@ -28,4 +28,10 @@ pub mod genie {
         )?;
         Ok(())
     }
+
+    pub fn initialize_profile(ctx: Context<InitializeProfile>) -> Result<()> {
+        let profile_bump = *ctx.bumps.get("profile").unwrap();
+        instructions::initialize_profile(ctx, profile_bump)?;
+        Ok(())
+    }
 }

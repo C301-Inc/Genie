@@ -33,3 +33,11 @@ pub struct InitializeProfile<'info> {
     system_program: Program<'info, System>,
     rent: Sysvar<'info, Rent>,
 }
+
+pub fn initialize_profile(ctx: Context<InitializeProfile>, profile_bump: u8) -> Result<()> {
+    ctx.accounts
+        .profile
+        .initialize(ctx.accounts.initial_auth.key(), profile_bump)?;
+
+    Ok(())
+}
