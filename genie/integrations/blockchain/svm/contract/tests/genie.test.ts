@@ -138,4 +138,25 @@ describe("genie", () => {
       });
     console.log("Your transaction signature", tx);
   });
+
+  it("inbox initialized!", async () => {
+    // Add your test here.
+    const tx = await program.methods
+      .initializeInbox("discord", "deok#7537")
+      .accounts({
+        inbox,
+        initialAuth: initialAuthInbox,
+        inboxMarkAccount,
+        inboxMark,
+        genie,
+        payer,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: web3.SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+      })
+      .signers([initialAuthInboxKeypair])
+      .rpc({ skipPreflight: true });
+    console.log("Your transaction signature", tx);
+  });
 });

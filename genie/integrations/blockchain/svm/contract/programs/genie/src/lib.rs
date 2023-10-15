@@ -41,6 +41,7 @@ pub mod genie {
         primary_key: String,
     ) -> Result<()> {
         let inbox_bump = *ctx.bumps.get("inbox").unwrap();
+        instructions::initialize_inbox(ctx, platform, primary_key, inbox_bump)?;
         Ok(())
     }
 }
