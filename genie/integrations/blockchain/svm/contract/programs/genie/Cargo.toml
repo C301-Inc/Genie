@@ -1,12 +1,12 @@
 [package]
-name = "contract"
+name = "genie"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Genie is a tool integration web2 platforms and blockchain networks"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "contract"
+name = "genie"
 
 [features]
 no-entrypoint = []
