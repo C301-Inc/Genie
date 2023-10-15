@@ -31,7 +31,7 @@ class Coin(BaseModel):
         constraints: list[models.UniqueConstraint] = [
             models.UniqueConstraint(
                 fields=["network", "mint_address"],
-                name="unique (network, mint_address)",
+                name="unique coin (network, mint_address)",
             ),
         ]
 
@@ -51,15 +51,15 @@ class Coin(BaseModel):
         verbose_name="Coin ticker",
         max_length=10,
         blank=True,
-        null=False,
+        null=True,
         help_text="Coin ticker (ex. SOL, USDC ...)",
     )
 
     mint_address: str = models.CharField(
         verbose_name="mint address",
         max_length=100,
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
         help_text="mint address",
     )
     
@@ -71,12 +71,6 @@ class Collection(BaseModel):
     class Meta:
         verbose_name: str = "NFT Collection"
         verbose_name_plural: str = "NFT Collection"
-        constraints: list[models.UniqueConstraint] = [
-            models.UniqueConstraint(
-                fields=["network", "mint_address"],
-                name="unique (network, mint_address)",
-            ),
-        ]
 
     network: "Network" = models.ForeignKey(
         Network, on_delete=models.CASCADE, related_name="nft_collections"
@@ -109,7 +103,7 @@ class NFT(BaseModel):
         constraints: list[models.UniqueConstraint] = [
             models.UniqueConstraint(
                 fields=["network", "mint_address"],
-                name="unique (network, mint_address)",
+                name="unique nft (network, mint_address)",
             ),
         ]
 
@@ -128,8 +122,8 @@ class NFT(BaseModel):
     mint_address: str = models.CharField(
         verbose_name="mint address",
         max_length=100,
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
         help_text="mint address",
     )
 
