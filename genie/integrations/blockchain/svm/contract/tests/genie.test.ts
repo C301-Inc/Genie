@@ -108,4 +108,34 @@ describe("genie", () => {
     });
     console.log("Your transaction signature", tx);
   });
+
+  it("profile initialized!", async () => {
+    console.log({
+      initialAuthPublicKey: initialAuthProfileKeypair.publicKey.toBase58(),
+      initialAuthSecretKey: initialAuthProfileKeypair.secretKey.toString(),
+    });
+
+    // Add your test here.
+    const tx = await program.methods
+      .initializeProfile()
+      .accounts({
+        profile,
+        initialAuth: initialAuthProfile,
+        profileMarkAccount,
+        profileMark,
+        genie,
+        payer,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: web3.SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+      })
+      .signers([initialAuthProfileKeypair])
+      .rpc({ skipPreflight: true })
+      .then((res) => res)
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log("Your transaction signature", tx);
+  });
 });
