@@ -12,10 +12,20 @@ declare_id!("DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK");
 pub mod genie {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+    pub fn initialize_genie(
+        ctx: Context<InitializeGenie>,
+        profile_metadata_uri: String,
+        inbox_metadata_uri: String,
+        external_uri: String,
+    ) -> Result<()> {
+        let genie_bump = *ctx.bumps.get("genie").unwrap();
+        instructions::initialize_genie(
+            ctx,
+            profile_metadata_uri,
+            inbox_metadata_uri,
+            external_uri,
+            genie_bump,
+        )?;
         Ok(())
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
