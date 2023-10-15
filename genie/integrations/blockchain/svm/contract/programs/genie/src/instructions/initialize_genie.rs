@@ -71,12 +71,13 @@ pub fn initialize_genie(
         genie_bump,
     )?;
 
-    create_profile_metadata(ctx)?;
+    create_profile_metadata(&ctx)?;
+    create_inbox_metadata(&ctx)?;
 
     Ok(())
 }
 
-fn create_profile_metadata(ctx: Context<InitializeGenie>) -> Result<()> {
+fn create_profile_metadata(ctx: &Context<InitializeGenie>) -> Result<()> {
     let bump = ctx.accounts.genie.bump;
     let authority_seeds = &[
         "genie".as_bytes(),
@@ -100,6 +101,42 @@ fn create_profile_metadata(ctx: Context<InitializeGenie>) -> Result<()> {
             name: "GENIE Profile Account".to_string(),
             symbol: "GENIE".to_string(),
             uri: ctx.accounts.genie.profile_metadata_uri.clone(),
+            seller_fee_basis_points: 0,
+            creators: None,
+            collection: None,
+            uses: None,
+        },
+        true,
+        true,
+        None,
+    )?;
+    Ok(())
+}
+
+fn create_inbox_metadata(ctx: &Context<InitializeGenie>) -> Result<()> {
+    let bump = ctx.accounts.genie.bump;
+    let authority_seeds = &[
+        "genie".as_bytes(),
+        &ctx.accounts.genie.authority.to_bytes(),
+        &[bump],
+    ];
+
+    let cpi_program = ctx.accounts.metadata_program.to_account_info();
+    let cpi_accounts = CreateMetadataAccountsV3 {
+        metadata: ctx.accounts.inbox_metadata.to_account_info(),
+        mint: ctx.accounts.inbox_mark.to_account_info(),
+        mint_authority: ctx.accounts.genie.to_account_info(),
+        payer: ctx.accounts.payer.to_account_info(),
+        update_authority: ctx.accounts.genie.to_account_info(),
+        system_program: ctx.accounts.system_program.to_account_info(),
+        rent: ctx.accounts.rent.to_account_info(),
+    };
+    create_metadata_accounts_v3(
+        CpiContext::new(cpi_program, cpi_accounts).with_signer(&[&authority_seeds[..]]),
+        DataV2 {
+            name: "GENIE Inbox Account".to_string(),
+            symbol: "GENIE".to_string(),
+            uri: ctx.accounts.genie.inbox_metadata_uri.clone(),
             seller_fee_basis_points: 0,
             creators: None,
             collection: None,
