@@ -34,3 +34,20 @@ pub struct InitializeInbox<'info> {
     system_program: Program<'info, System>,
     rent: Sysvar<'info, Rent>,
 }
+
+pub fn initialize_inbox(
+    ctx: Context<InitializeInbox>,
+    platform: String,
+    primary_key: String,
+    inbox_bump: u8,
+) -> Result<()> {
+    ctx.accounts.inbox.initialize(
+        platform,
+        primary_key,
+        ctx.accounts.initial_auth.key(),
+        inbox_bump,
+        None,
+    )?;
+
+    Ok(())
+}
