@@ -1,6 +1,6 @@
 from django.contrib import admin
 from blockchain.models import Network, Coin, Collection, NFT, CoinTransactionHistory, NFTTransactionHistory
-from genie_backend.utils.models import BaseModelAdmin
+from backend.utils.models import BaseModelAdmin
 
 
 class NetworkAdmin(BaseModelAdmin):
