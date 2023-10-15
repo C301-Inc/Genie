@@ -1,10 +1,14 @@
 use anchor_lang::prelude::*;
 
+pub mod error;
 pub mod instructions;
 pub mod state;
+pub mod utils;
 
+pub use error::*;
 pub use instructions::*;
 pub use state::*;
+pub use utils::*;
 
 declare_id!("DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK");
 
