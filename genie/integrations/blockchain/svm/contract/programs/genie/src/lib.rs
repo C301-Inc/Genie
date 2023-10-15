@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
 
+pub mod instructions;
 pub mod state;
 
+pub use instructions::*;
 pub use state::*;
 
 declare_id!("DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK");
