@@ -1,10 +1,14 @@
 use anchor_lang::prelude::*;
 
+pub mod error;
 pub mod instructions;
 pub mod state;
+pub mod utils;
 
+pub use error::*;
 pub use instructions::*;
 pub use state::*;
+pub use utils::*;
 
 declare_id!("DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK");
 
@@ -42,6 +46,16 @@ pub mod genie {
     ) -> Result<()> {
         let inbox_bump = *ctx.bumps.get("inbox").unwrap();
         instructions::initialize_inbox(ctx, platform, primary_key, inbox_bump)?;
+        Ok(())
+    }
+
+    pub fn register_inbox_owner(ctx: Context<RegisterInboxOwner>) -> Result<()> {
+        instructions::register_inbox(ctx)?;
+        Ok(())
+    }
+
+    pub fn unregister_inbox_owner(ctx: Context<UnregisterInboxOwner>) -> Result<()> {
+        instructions::unregister_inbox_owner(ctx)?;
         Ok(())
     }
 }

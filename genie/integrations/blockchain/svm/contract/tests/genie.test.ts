@@ -159,4 +159,37 @@ describe("genie", () => {
       .rpc({ skipPreflight: true });
     console.log("Your transaction signature", tx);
   });
+
+  it("register inbox owner ", async () => {
+    console.log({
+      initialAuthInboxPublicKey: initialAuthInboxKeypair.publicKey.toBase58(),
+      initialAuthInboxSecretKey: initialAuthInboxKeypair.secretKey.toString(),
+    });
+    const tx = await program.methods
+      .registerInboxOwner()
+      .accounts({
+        payer,
+        inbox,
+        initialAuthInbox,
+        profile,
+        initialAuthProfile: initialAuthProfile,
+      })
+      .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+      .rpc({ skipPreflight: true });
+    console.log("Your transaction signature", tx);
+  });
+  it("unregister inbox owner ", async () => {
+    const tx = await program.methods
+      .unregisterInboxOwner()
+      .accounts({
+        payer,
+        inbox,
+        initialAuthInbox,
+        profile,
+        initialAuthProfile: initialAuthProfile,
+      })
+      .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+      .rpc({ skipPreflight: true });
+    console.log("Your transaction signature", tx);
+  });
 });
