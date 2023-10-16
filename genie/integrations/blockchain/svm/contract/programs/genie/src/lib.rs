@@ -48,4 +48,9 @@ pub mod genie {
         instructions::initialize_inbox(ctx, platform, primary_key, inbox_bump)?;
         Ok(())
     }
+
+    pub fn register_inbox_owner(ctx: Context<RegisterInboxOwner>) -> Result<()> {
+        instructions::register_inbox(ctx)?;
+        Ok(())
+    }
 }
