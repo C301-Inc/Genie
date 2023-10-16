@@ -59,6 +59,7 @@ pub mod genie {
         Ok(())
     }
     pub fn send_token(ctx: Context<SendToken>, amount: u64) -> Result<()> {
+        instructions::send_token(ctx, amount)?;
         Ok(())
     }
 }
