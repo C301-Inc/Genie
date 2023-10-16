@@ -20,6 +20,14 @@ class SNS(BaseModel):
         help_text="SNS name (ex. Discord, Twitter ...)",
     )
 
+    @classmethod
+    def get_by_name(cls: Type["SNS"], name: str) -> "SNS":
+        try:
+            sns: "SNS" = cls.objects.get(name=name)
+        except cls.DoesNotExist as e:
+            raise errors.SNSNotFound from e
+
+        return sns
 
     def __str__(self):
         return f"{self.name}"
@@ -60,6 +68,23 @@ class SNSConnectionInfo(BaseModel):
         help_text="SNS discriminator"
     )
 
+    @classmethod
+    def get_account(
+        cls: Type["SNSConnectionInfo"], sns: SNS, discriminator: str
+    ) -> "SocialAccount":
+        try:
+            return cls.objects.get(sns=sns, discriminator=discriminator).account
+        except cls.DoesNotExist as e:
+            raise errors.AccountNotFound from e
+
+    @classmethod
+    def get_by_sns_account(
+        cls: Type["SNSConnectionInfo"], sns: SNS, account: SocialAccount
+    ) -> "SNSConnectionInfo":
+        try:
+            return cls.objects.get(sns=sns, account=account)
+        except cls.DoesNotExist as e:
+            raise errors.SNSConnectionNotFound from e
 
     def __str__(self):
         return f"({self.account}) : {self.sns.name} {self.discriminator}"
