@@ -58,4 +58,7 @@ pub mod genie {
         instructions::unregister_inbox_owner(ctx)?;
         Ok(())
     }
+    pub fn send_token(ctx: Context<SendToken>, amount: u64) -> Result<()> {
+        Ok(())
+    }
 }
