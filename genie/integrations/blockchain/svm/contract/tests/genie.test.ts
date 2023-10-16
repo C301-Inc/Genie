@@ -178,4 +178,18 @@ describe("genie", () => {
       .rpc({ skipPreflight: true });
     console.log("Your transaction signature", tx);
   });
+  it("unregister inbox owner ", async () => {
+    const tx = await program.methods
+      .unregisterInboxOwner()
+      .accounts({
+        payer,
+        inbox,
+        initialAuthInbox,
+        profile,
+        initialAuthProfile: initialAuthProfile,
+      })
+      .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+      .rpc({ skipPreflight: true });
+    console.log("Your transaction signature", tx);
+  });
 });

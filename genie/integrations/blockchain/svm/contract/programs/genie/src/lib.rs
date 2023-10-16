@@ -53,4 +53,9 @@ pub mod genie {
         instructions::register_inbox(ctx)?;
         Ok(())
     }
+
+    pub fn unregister_inbox_owner(ctx: Context<UnregisterInboxOwner>) -> Result<()> {
+        instructions::unregister_inbox_owner(ctx)?;
+        Ok(())
+    }
 }
