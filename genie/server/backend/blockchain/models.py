@@ -20,6 +20,15 @@ class Network(BaseModel):
         help_text="Network name (ex. Solana ...)",
     )
 
+    @classmethod
+    def get_by_name(cls: Type["Network"], name: str) -> "Network":
+        try:
+            network: "Network" = cls.objects.get(name=name)
+        except cls.DoesNotExist as e:
+            raise errors.NetworkNotFound from e
+
+        return network
+
     def __str__(self):
         return f"{self.name}"
 
@@ -128,7 +137,7 @@ class NFT(BaseModel):
     )
 
     collection: "Collection" = models.ForeignKey(
-        Collection, on_delete=models.CASCADE, related_name="NFT"
+        Collection, on_delete=models.CASCADE, related_name="NFT", blank=True, null=True
     )
 
     def __str__(self):
