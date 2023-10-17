@@ -9,7 +9,7 @@ description = """ Genie bot """
 intents = discord.Intents.all()
 
 cogs: list = [
-    #"functions.dashboard",
+    "functions.guide",
 ]
 
 client = commands.Bot(
