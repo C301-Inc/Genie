@@ -51,3 +51,15 @@ class SNSConnectionNotFound(GenieGraphQLException):
     error_code = "A00004"
     message = "Does Not Exist!!!"
     error_msg = "SNSConnectionInfo does not exist. Please check again."
+
+
+class CreateSocialAccountFailure(GenieGraphQLException):
+    error_code = "A00005"
+    message = "Serverless Call Failure!!!"
+    error_msg = "Failed to call CreateSocialAccount"
+
+
+class CreateInboxAccountFailure(GenieGraphQLException):
+    error_code = "A00006"
+    message = "Serverless Call Failure!!!"
+    error_msg = "Failed to call CreateInboxAccount"
