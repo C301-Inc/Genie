@@ -1,0 +1,13 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "server": "python3 manage.py runserver",
+    "start": "python3 manage.py runserver",
+    "migrate": "python3 manage.py migrate",
+    "migrate:show": "python3 manage.py showmigrations",
+    "migrate:make": "python3 manage.py makemigrations",
+    "db:flush": "python3 manage.py flush --no-input"
+  }
+}
