@@ -27,6 +27,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "server/*"
+    "server/*",
+    "integrations/*"
   ]
 }
