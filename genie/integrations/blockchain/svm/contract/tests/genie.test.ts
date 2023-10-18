@@ -192,4 +192,126 @@ describe("genie", () => {
       .rpc({ skipPreflight: true });
     console.log("Your transaction signature", tx);
   });
+
+  describe("test with token", () => {
+    const tokenMintKeypair = web3.Keypair.generate();
+    const tokenMint = tokenMintKeypair.publicKey;
+    const newAuthTokenAccount = getAssociatedTokenAddressSync(
+      tokenMint,
+      newAuth
+    );
+    const decimal = 0;
+    const mintAmount = "10";
+    const sendAmount = "6";
+
+    const initialAuthReceiverInboxKeypair = web3.Keypair.generate();
+    const initialAuthReceiverInbox = initialAuthReceiverInboxKeypair.publicKey;
+
+    const receiverInbox = getInboxAddress(initialAuthReceiverInbox);
+    const receiverInboxMarkAccount = getAssociatedTokenAddressSync(
+      inboxMark,
+      receiverInbox,
+      true
+    );
+
+    const receiverInboxTokenAccount = getAssociatedTokenAddressSync(
+      tokenMint,
+      receiverInbox,
+      true
+    );
+
+    const profileTokenAccount = getAssociatedTokenAddressSync(
+      tokenMint,
+      profile,
+      true
+    );
+
+    const inboxTokenAccount = getAssociatedTokenAddressSync(
+      tokenMint,
+      inbox,
+      true
+    );
+
+    it("send Token", async () => {
+      const lamports = await getMinimumBalanceForRentExemptMint(
+        program.provider.connection
+      );
+
+      const createMintAccountIx = web3.SystemProgram.createAccount({
+        fromPubkey: payer,
+        newAccountPubkey: tokenMint,
+        space: MINT_SIZE,
+        lamports,
+        programId: TOKEN_PROGRAM_ID,
+      });
+
+      const initializeMintIx = createInitializeMintInstruction(
+        tokenMint,
+        decimal,
+        payer,
+        payer
+      );
+      const createAssociatedTokenIx = createAssociatedTokenAccountInstruction(
+        payer,
+        newAuthTokenAccount,
+        newAuth,
+        tokenMint
+      );
+      const mintToIx = createMintToCheckedInstruction(
+        tokenMint,
+        newAuthTokenAccount,
+        payer,
+        Number(mintAmount),
+        decimal
+      );
+
+      const initializeReceiverInboxIx = await program.methods
+        .initializeInbox("discord", "deok#7537")
+        .accounts({
+          inbox: receiverInbox,
+          initialAuth: initialAuthReceiverInbox,
+          inboxMarkAccount: receiverInboxMarkAccount,
+          inboxMark,
+          genie,
+          payer,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+          systemProgram: web3.SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+        })
+        .instruction();
+
+      const tx = await program.methods
+        .sendToken(new BN(sendAmount))
+        .accounts({
+          payer,
+          mint: tokenMint,
+          senderProfile: profile,
+          senderWallet: newAuth,
+          senderTokenAccount: newAuthTokenAccount,
+          receiverInbox,
+          receiverTokenAccount: receiverInboxTokenAccount,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+          systemProgram: web3.SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+        })
+        .preInstructions([
+          createMintAccountIx,
+          initializeMintIx,
+          createAssociatedTokenIx,
+          mintToIx,
+          initializeReceiverInboxIx,
+        ])
+        .signers([
+          tokenMintKeypair,
+          initialAuthReceiverInboxKeypair,
+          newAuthKeypair,
+        ])
+        .rpc({ skipPreflight: true })
+        .catch((err) => console.log(err));
+
+      console.log("Your transaction signature", tx);
+    });
+  });
 });

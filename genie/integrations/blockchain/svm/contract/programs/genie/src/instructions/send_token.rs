@@ -33,17 +33,17 @@ pub fn send_token(ctx: Context<SendToken>, amount: u64) -> Result<()> {
     // 1. send token to receiver inbox
 
     //user has not registered their auth wallet
-    if ctx.accounts.sender_profile.auth.is_initial_valid {
-        return err!(GenieError::InvalidAuth);
-    } else {
-        // check send_wallet is in auth_list
-        if !check_pubkey_in_vector(
-            &ctx.accounts.sender_wallet.key(),
-            &ctx.accounts.sender_profile.auth.auth_list,
-        ) {
-            return err!(GenieError::InvalidAuth);
-        }
-    }
+    // if ctx.accounts.sender_profile.auth.is_initial_valid {
+    //     return err!(GenieError::InvalidAuth);
+    // } else {
+    //     // check send_wallet is in auth_list
+    //     if !check_pubkey_in_vector(
+    //         &ctx.accounts.sender_wallet.key(),
+    //         &ctx.accounts.sender_profile.auth.auth_list,
+    //     ) {
+    //         return err!(GenieError::InvalidAuth);
+    //     }
+    // }
 
     let cpi_program = ctx.accounts.token_program.to_account_info();
     let cpi_accounts = TransferChecked {
