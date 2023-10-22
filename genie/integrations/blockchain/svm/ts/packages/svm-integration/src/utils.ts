@@ -2,7 +2,10 @@ import { AnchorProvider, Program, Idl, web3 } from "@coral-xyz/anchor";
 import { PublicKey, Keypair, Connection, Transaction } from "@solana/web3.js";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-export { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+export {
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 
 import { toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
 import { MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
