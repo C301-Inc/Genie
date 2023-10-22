@@ -13,25 +13,25 @@ export default class Genie {
   programId: web3.PublicKey;
   client: AnchorClient;
 
-  get genie() {
+  get key() {
     return this.isInitialized
       ? this.getGenieAddress(this.authority.publicKey)
       : undefined;
   }
 
   get profileMark() {
-    return this.genie
+    return this.key
       ? web3.PublicKey.findProgramAddressSync(
-          [Buffer.from("genie_profile"), this.genie.toBuffer()],
+          [Buffer.from("genie_profile"), this.key.toBuffer()],
           this.programId
         )[0]
       : undefined;
   }
 
   get inboxMark() {
-    return this.genie
+    return this.key
       ? web3.PublicKey.findProgramAddressSync(
-          [Buffer.from("genie_inbox"), this.genie.toBuffer()],
+          [Buffer.from("genie_inbox"), this.key.toBuffer()],
           this.programId
         )[0]
       : undefined;
@@ -70,17 +70,27 @@ export default class Genie {
         throw new Error("Program not initialized");
       }
       if (
-        this.genie === undefined ||
+        this.key === undefined ||
         this.profileMark === undefined ||
         this.inboxMark === undefined
       ) {
         throw new Error("genie not setted");
       }
 
+      const genieData = await program.account.genie
+        .fetch(this.key)
+        .then((res) => res)
+        .catch((err) => undefined);
+
+      if (genieData !== undefined) {
+        this.isInitialized = true;
+        return this.key;
+      }
+
       const tx = await program.methods
         .initializeGenie(profileMarkLink, inboxMarkLink, webpage)
         .accounts({
-          genie: this.genie,
+          genie: this.key,
           profileMark: this.profileMark,
           profileMetadata: getMetadataAddress(this.profileMark),
           inboxMark: this.inboxMark,
@@ -98,7 +108,8 @@ export default class Genie {
         .catch((error) => {
           throw new Error("genie initialization failed");
         });
-      return this.genie;
+      this.isInitialized = true;
+      return this.key;
     } catch (err) {
       throw new Error(err);
     }
