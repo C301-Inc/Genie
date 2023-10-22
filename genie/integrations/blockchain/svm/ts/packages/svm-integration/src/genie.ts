@@ -1,12 +1,115 @@
 import * as anchor from "@coral-xyz/anchor";
-import { web3 } from "@coral-xyz/anchor";
+import { web3, Program } from "@coral-xyz/anchor";
+import {
+  AnchorClient,
+  getMetadataAddress,
+  METADATA_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from "./utils";
 
 export default class Genie {
-  authority: web3.PublicKey;
-  isInitialized: boolean;
+  authority: web3.Keypair;
+  isInitialized: boolean = false;
+  programId: web3.PublicKey;
+  client: AnchorClient;
 
-  constructor(authority: web3.PublicKey) {
+  get genie() {
+    return this.isInitialized
+      ? this.getGenieAddress(this.authority.publicKey)
+      : undefined;
+  }
+
+  get profileMark() {
+    return this.genie
+      ? web3.PublicKey.findProgramAddressSync(
+          [Buffer.from("genie_profile"), this.genie.toBuffer()],
+          this.programId
+        )[0]
+      : undefined;
+  }
+
+  get inboxMark() {
+    return this.genie
+      ? web3.PublicKey.findProgramAddressSync(
+          [Buffer.from("genie_inbox"), this.genie.toBuffer()],
+          this.programId
+        )[0]
+      : undefined;
+  }
+
+  get program() {
+    return (async () => {
+      const program = await this.client
+        .getProgram(this.programId.toBase58())
+        .catch(() => undefined);
+      return program;
+    })();
+  }
+
+  constructor(
+    authority: web3.Keypair,
+    payer: web3.Keypair,
+    programId: web3.PublicKey,
+    endpoint: string
+  ) {
     this.authority = authority;
-    this.isInitialized = false;
+    this.programId = programId;
+    const client = new AnchorClient(payer.secretKey.toString(), endpoint);
+  }
+
+  async initialize(
+    programId: string,
+    profileMarkLink: string = "https://arweave.net/5XNlZK1agbCZgdJS50TwEl9SG-mhz-rndidoFi37Hzc",
+    inboxMarkLink: string = "https://arweave.net/JbzEfZANGNoLIzP35Yj7ziFWKUrkQWhstehjS8l3OjU",
+    webpage: string = "https://www.geniebridge.link"
+  ) {
+    try {
+      const program = await this.program;
+
+      if (program === undefined) {
+        throw new Error("Program not initialized");
+      }
+      if (
+        this.genie === undefined ||
+        this.profileMark === undefined ||
+        this.inboxMark === undefined
+      ) {
+        throw new Error("genie not setted");
+      }
+
+      const tx = await program.methods
+        .initializeGenie(profileMarkLink, inboxMarkLink, webpage)
+        .accounts({
+          genie: this.genie,
+          profileMark: this.profileMark,
+          profileMetadata: getMetadataAddress(this.profileMark),
+          inboxMark: this.inboxMark,
+          inboxMetadata: getMetadataAddress(this.inboxMark),
+          authority: this.authority.publicKey,
+          payer: this.client.payer.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          metadataProgram: METADATA_PROGRAM_ID,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+        })
+        .signers([this.authority])
+        .rpc({ skipPreflight: true })
+        .then((res) => res)
+        .catch((error) => {
+          throw new Error("genie initialization failed");
+        });
+      return this.genie;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  private getGenieAddress(authority: web3.PublicKey) {
+    return this.programId
+      ? web3.PublicKey.findProgramAddressSync(
+          [Buffer.from("genie"), authority.toBuffer()],
+          this.programId
+        )[0]
+      : undefined;
   }
 }

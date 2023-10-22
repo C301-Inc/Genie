@@ -102,8 +102,11 @@ __metadata:
   resolution: "@genie-web3/svm-integration@workspace:."
   dependencies:
     "@coral-xyz/anchor": ^0.29.0
+    "@metaplex-foundation/mpl-token-metadata": ^3.1.0
+    "@metaplex-foundation/umi-web3js-adapters": ^0.8.9
     "@solana/spl-token": ^0.3.8
     "@solana/web3.js": ^1.87.1
+    "@types/node": ^20.8.7
     eslint: ^8.51.0
     prettier: ^3.0.3
     rimraf: ^5.0.5
@@ -148,6 +151,38 @@ __metadata:
     wrap-ansi: ^8.1.0
     wrap-ansi-cjs: "npm:wrap-ansi@^7.0.0"
   checksum: 4a473b9b32a7d4d3cfb7a614226e555091ff0c5a29a1734c28c72a182c2f6699b26fc6b5c2131dfd841e86b185aea714c72201d7c98c2fba5f17709333a67aeb
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/mpl-token-metadata@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metaplex-foundation/mpl-token-metadata@npm:3.1.0"
+  dependencies:
+    "@metaplex-foundation/mpl-toolbox": ^0.9.0
+  peerDependencies:
+    "@metaplex-foundation/umi": ^0.8.2
+  checksum: f35792368f48eadb6e44856da62bbc070deaa17c4fe2ae2d28dd74c9f458efcee82fc2ec7bc5af444e69102a6b3927dcded0e0d5cfcd31b64008c0b2d2ad7017
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/mpl-toolbox@npm:^0.9.0":
+  version: 0.9.1
+  resolution: "@metaplex-foundation/mpl-toolbox@npm:0.9.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^0.8.2
+  checksum: d2bb9bed47fdba70f9a16b18113f3e4dbe7d7a52a36926bd55511c9c3f4c10d5847620dfd48c20c64e7904f187073e381e78d03bf1001ae13c1204693236129d
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-web3js-adapters@npm:^0.8.9":
+  version: 0.8.9
+  resolution: "@metaplex-foundation/umi-web3js-adapters@npm:0.8.9"
+  dependencies:
+    buffer: ^6.0.3
+  peerDependencies:
+    "@metaplex-foundation/umi": ^0.8.9
+    "@solana/web3.js": ^1.72.0
+  checksum: b5ea0f3631715f265b27b87a768b14e2fa934a5fc3f2c9be5b5dcfb8d0f0ddccdc8909fcb5e7ecb90e729919ef9a863feeed0aac39a6b1805f0e32ea3f77a845
   languageName: node
   linkType: hard
 
@@ -296,6 +331,15 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.8.7":
+  version: 20.8.7
+  resolution: "@types/node@npm:20.8.7"
+  dependencies:
+    undici-types: ~5.25.1
+  checksum: 2173c0c03daefcb60c03a61b1371b28c8fe412e7a40dc6646458b809d14a85fbc7aeb369d957d57f0aaaafd99964e77436f29b3b579232d8f2b20c58abbd1d25
   languageName: node
   linkType: hard
 
