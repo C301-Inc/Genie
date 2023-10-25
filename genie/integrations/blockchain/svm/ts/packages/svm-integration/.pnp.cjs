@@ -30,6 +30,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@coral-xyz/anchor", "npm:0.29.0"],\
             ["@metaplex-foundation/mpl-token-metadata", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:3.1.0"],\
+            ["@metaplex-foundation/umi", "npm:0.8.9"],\
             ["@metaplex-foundation/umi-web3js-adapters", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.8.9"],\
             ["@solana/spl-token", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.3.8"],\
             ["@solana/web3.js", "npm:1.87.1"],\
@@ -38,7 +39,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:3.0.3"],\
             ["rimraf", "npm:5.0.5"],\
             ["typedoc", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.25.2"],\
-            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+            ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -175,6 +176,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@genie-web3/svm-integration", "workspace:."],\
             ["@coral-xyz/anchor", "npm:0.29.0"],\
             ["@metaplex-foundation/mpl-token-metadata", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:3.1.0"],\
+            ["@metaplex-foundation/umi", "npm:0.8.9"],\
             ["@metaplex-foundation/umi-web3js-adapters", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.8.9"],\
             ["@solana/spl-token", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.3.8"],\
             ["@solana/web3.js", "npm:1.87.1"],\
@@ -183,7 +185,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:3.0.3"],\
             ["rimraf", "npm:5.0.5"],\
             ["typedoc", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.25.2"],\
-            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+            ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -255,7 +257,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@metaplex-foundation/mpl-token-metadata", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:3.1.0"],\
             ["@metaplex-foundation/mpl-toolbox", "virtual:0581036efada634411c0588c66d8d0e1d895ec77d55d221868274e5f965092619dce56d1b864d0d69f97239afc4aa79b83779341f75ffdfcae95ac5ac0bb6769#npm:0.9.1"],\
-            ["@metaplex-foundation/umi", null],\
+            ["@metaplex-foundation/umi", "npm:0.8.9"],\
             ["@types/metaplex-foundation__umi", null]\
           ],\
           "packagePeers": [\
@@ -277,12 +279,86 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/@metaplex-foundation-mpl-toolbox-virtual-116cf58b51/0/cache/@metaplex-foundation-mpl-toolbox-npm-0.9.1-9e70d2e5ef-d2bb9bed47.zip/node_modules/@metaplex-foundation/mpl-toolbox/",\
           "packageDependencies": [\
             ["@metaplex-foundation/mpl-toolbox", "virtual:0581036efada634411c0588c66d8d0e1d895ec77d55d221868274e5f965092619dce56d1b864d0d69f97239afc4aa79b83779341f75ffdfcae95ac5ac0bb6769#npm:0.9.1"],\
-            ["@metaplex-foundation/umi", null],\
+            ["@metaplex-foundation/umi", "npm:0.8.9"],\
             ["@types/metaplex-foundation__umi", null]\
           ],\
           "packagePeers": [\
             "@metaplex-foundation/umi",\
             "@types/metaplex-foundation__umi"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-npm-0.8.9-35e1bd3f8e-d418d178e7.zip/node_modules/@metaplex-foundation/umi/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-options", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-public-keys", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers", "npm:0.8.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi-options", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-options-npm-0.8.9-029c8b22eb-09ea3d2a9a.zip/node_modules/@metaplex-foundation/umi-options/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi-options", "npm:0.8.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi-public-keys", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-public-keys-npm-0.8.9-5c5b22f6b0-f5d1bf557a.zip/node_modules/@metaplex-foundation/umi-public-keys/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi-public-keys", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers-encodings", "npm:0.8.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi-serializers", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-serializers-npm-0.8.9-ab60f0d147-4f76ef8d3e.zip/node_modules/@metaplex-foundation/umi-serializers/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi-serializers", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-options", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-public-keys", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers-core", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers-encodings", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers-numbers", "npm:0.8.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi-serializers-core", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-serializers-core-npm-0.8.9-59ec1e19c3-5305f893f3.zip/node_modules/@metaplex-foundation/umi-serializers-core/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi-serializers-core", "npm:0.8.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi-serializers-encodings", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-serializers-encodings-npm-0.8.9-462337eed1-f32d1acfa0.zip/node_modules/@metaplex-foundation/umi-serializers-encodings/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi-serializers-encodings", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers-core", "npm:0.8.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@metaplex-foundation/umi-serializers-numbers", [\
+        ["npm:0.8.9", {\
+          "packageLocation": "./.yarn/cache/@metaplex-foundation-umi-serializers-numbers-npm-0.8.9-c2b8e41aaa-3b8144cbcb.zip/node_modules/@metaplex-foundation/umi-serializers-numbers/",\
+          "packageDependencies": [\
+            ["@metaplex-foundation/umi-serializers-numbers", "npm:0.8.9"],\
+            ["@metaplex-foundation/umi-serializers-core", "npm:0.8.9"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -299,7 +375,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/@metaplex-foundation-umi-web3js-adapters-virtual-cf0a37d61b/0/cache/@metaplex-foundation-umi-web3js-adapters-npm-0.8.9-ffc7851517-b5ea0f3631.zip/node_modules/@metaplex-foundation/umi-web3js-adapters/",\
           "packageDependencies": [\
             ["@metaplex-foundation/umi-web3js-adapters", "virtual:85e49e5332956316e884edeb91f3ca371e40b8cd6361dd0f82c1ee7faafef63457fc7bac9d6522163306f4412905adcc614c11c84f9a193d24c743f10bc6cb5d#npm:0.8.9"],\
-            ["@metaplex-foundation/umi", null],\
+            ["@metaplex-foundation/umi", "npm:0.8.9"],\
             ["@solana/web3.js", "npm:1.87.1"],\
             ["@types/metaplex-foundation__umi", null],\
             ["@types/solana__web3.js", null],\
@@ -2728,7 +2804,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["marked", "npm:4.3.0"],\
             ["minimatch", "npm:9.0.3"],\
             ["shiki", "npm:0.14.5"],\
-            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+            ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"]\
           ],\
           "packagePeers": [\
             "@types/typescript",\
@@ -2738,10 +2814,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["typescript", [\
-        ["patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441", {\
-          "packageLocation": "./.yarn/cache/typescript-patch-2e8dbfb8ab-0f4da2f15e.zip/node_modules/typescript/",\
+        ["patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587", {\
+          "packageLocation": "./.yarn/cache/typescript-patch-f8edcd7439-1f8f3b6aae.zip/node_modules/typescript/",\
           "packageDependencies": [\
-            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+            ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"]\
           ],\
           "linkType": "HARD"\
         }]\

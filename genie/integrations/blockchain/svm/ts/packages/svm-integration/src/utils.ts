@@ -105,7 +105,7 @@ export class AnchorClient {
     try {
       const data = await Program.fetchIdl(programId, this.provider);
       if (data !== null) idl = data;
-      else throw new ErrorEvent("Idl Account has no data");
+      else throw new Error("Idl Account has no data");
     } catch (err) {
       throw new Error(err.toString());
     }
