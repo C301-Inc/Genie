@@ -58,7 +58,6 @@ export default class Genie {
   }
 
   async initialize(
-    programId: string,
     profileMarkLink: string = "https://arweave.net/5XNlZK1agbCZgdJS50TwEl9SG-mhz-rndidoFi37Hzc",
     inboxMarkLink: string = "https://arweave.net/JbzEfZANGNoLIzP35Yj7ziFWKUrkQWhstehjS8l3OjU",
     webpage: string = "https://www.geniebridge.link"
