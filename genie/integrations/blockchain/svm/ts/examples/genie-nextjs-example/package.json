@@ -1,8 +1,9 @@
 {
   "name": "genie-nextjs-example",
-  "packageManager": "yarn@3.6.4",
+  "packageManager": "yarn@4.0.0",
   "dependencies": {
-    "@genie-web3/svm-integration": "^1.0.8",
+    "@genie-web3/svm-integration": "^1.0.10",
+    "@solana/web3.js": "^1.87.2",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
@@ -12,6 +13,7 @@
     "@types/node": "^20.8.7",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }
 }

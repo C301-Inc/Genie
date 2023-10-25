@@ -12,6 +12,8 @@ export const getGenie = async () => {
     const programId = new PublicKey(GENIE_PROGRAM_ID)
     const endpoint = SOLANA_ENDPOINT
 
-    const genie = new Genie(authority, payer, programId, endpoint)
-    genie.initialize()
+    const genie = new Genie(authority, payer, programId, endpoint);
+    
+    
+    
 }
