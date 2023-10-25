@@ -90,7 +90,7 @@ var Genie = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    Genie.prototype.initialize = function (programId, profileMarkLink, inboxMarkLink, webpage) {
+    Genie.prototype.initialize = function (profileMarkLink, inboxMarkLink, webpage) {
         if (profileMarkLink === void 0) { profileMarkLink = "https://arweave.net/5XNlZK1agbCZgdJS50TwEl9SG-mhz-rndidoFi37Hzc"; }
         if (inboxMarkLink === void 0) { inboxMarkLink = "https://arweave.net/JbzEfZANGNoLIzP35Yj7ziFWKUrkQWhstehjS8l3OjU"; }
         if (webpage === void 0) { webpage = "https://www.geniebridge.link"; }

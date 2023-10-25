@@ -11,7 +11,7 @@ export default class Genie {
     get inboxMark(): anchor.web3.PublicKey | undefined;
     get program(): Promise<anchor.Program<anchor.Idl> | undefined>;
     constructor(authority: web3.Keypair, payer: web3.Keypair, programId: web3.PublicKey, endpoint: string);
-    initialize(programId: string, profileMarkLink?: string, inboxMarkLink?: string, webpage?: string): Promise<anchor.web3.PublicKey>;
+    initialize(profileMarkLink?: string, inboxMarkLink?: string, webpage?: string): Promise<anchor.web3.PublicKey>;
     private getGenieAddress;
 }
 //# sourceMappingURL=genie.d.ts.map
