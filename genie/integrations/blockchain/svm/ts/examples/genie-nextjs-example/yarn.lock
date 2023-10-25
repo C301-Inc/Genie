@@ -76,9 +76,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genie-web3/svm-integration@npm:^1.0.7":
-  version: 1.0.7
-  resolution: "@genie-web3/svm-integration@npm:1.0.7"
+"@genie-web3/svm-integration@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "@genie-web3/svm-integration@npm:1.0.8"
   dependencies:
     "@coral-xyz/anchor": ^0.29.0
     "@metaplex-foundation/mpl-token-metadata": ^3.1.0
@@ -86,7 +86,7 @@ __metadata:
     "@metaplex-foundation/umi-web3js-adapters": ^0.8.9
     "@solana/spl-token": ^0.3.8
     "@solana/web3.js": ^1.87.1
-  checksum: f5f9ab17e626086e2bbb945ac05c3270de7776c3a6e15d08b2fe253606def3fe641270024a5b7f50b1c8aaf884c4ff86c967709db57ee8e83ca2727749361133
+  checksum: 614ab5469335cc3a1a4e4d78392a43cda141a84f52f988dabb6d321ba7d23361a80bdf6df39c71bbb8c8d3411666408bcf88482cd8273aee8af3f3b3944f7c63
   languageName: node
   linkType: hard
 
@@ -1199,7 +1199,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "genie-nextjs-example@workspace:."
   dependencies:
-    "@genie-web3/svm-integration": ^1.0.7
+    "@genie-web3/svm-integration": ^1.0.8
     "@types/jest": ^29.5.6
     "@types/node": ^20.8.7
     "@types/react": ^18.2.31
