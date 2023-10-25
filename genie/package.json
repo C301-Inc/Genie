@@ -28,6 +28,7 @@
     "apps/*",
     "packages/*",
     "server/*",
-    "integrations/*"
+    "integrations/*",
+    "integrations/blockchain/svm/ts/packages/svm-integration"
   ]
 }
