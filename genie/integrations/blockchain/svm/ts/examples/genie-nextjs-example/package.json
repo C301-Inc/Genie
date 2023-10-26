@@ -2,7 +2,7 @@
   "name": "genie-nextjs-example",
   "packageManager": "yarn@4.0.0",
   "dependencies": {
-    "@genie-web3/svm-integration": "^1.0.25",
+    "@genie-web3/svm-integration": "^1.0.28",
     "@solana/web3.js": "^1.87.2",
     "next": "latest",
     "react": "latest",
