@@ -1,36 +1,36 @@
-import Genie from "./genie";
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "./utils";
-import { web3 } from "@coral-xyz/anchor";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-``;
+import Genie from './genie'
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from './utils'
+import { web3 } from '@coral-xyz/anchor'
+import { getAssociatedTokenAddressSync } from '@solana/spl-token'
+;``
 export default class Profile {
-  genie: Genie;
-  initialAuth: web3.PublicKey;
-  isInitialized: boolean = false;
+  genie: Genie
+  initialAuth: web3.PublicKey
+  isInitialized: boolean = false
 
   constructor(genie: Genie, initialAuth: web3.PublicKey) {
-    this.genie = genie;
-    this.initialAuth = initialAuth;
+    this.genie = genie
+    this.initialAuth = initialAuth
   }
 
   async initialize(initialAuthProfileKeypair: web3.Keypair) {
     try {
-      const program = await this.genie.program;
+      const program = await this.genie.program
 
       if (program === undefined) {
-        throw new Error("Genie not initialized");
+        throw new Error('Genie not initialized')
       }
       if (!this.genie.isInitialized) {
-        throw new Error("Genie is not initialized");
+        throw new Error('Genie is not initialized')
       }
       const profileData = await program.account.profile
         .fetch(this.key)
         .then((res) => res)
-        .catch((err) => undefined);
+        .catch((err) => undefined)
 
       if (profileData !== undefined) {
-        this.isInitialized = true;
-        return "already initialized";
+        this.isInitialized = true
+        return 'already initialized'
       }
 
       const tx = await program.methods
@@ -45,16 +45,16 @@ export default class Profile {
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: web3.SystemProgram.programId,
-          rent: web3.SYSVAR_RENT_PUBKEY,
+          rent: web3.SYSVAR_RENT_PUBKEY
         })
         .signers([initialAuthProfileKeypair])
         .rpc({ skipPreflight: true })
-        .then(res => res)
+        .then((res) => res)
         .catch((error) => {
-          throw new Error(error);
-        });
-      this.isInitialized = true;
-      return tx;
+          throw new Error(error)
+        })
+      this.isInitialized = true
+      return tx
     } catch (err) {
       throw new Error(err)
     }
@@ -62,13 +62,12 @@ export default class Profile {
 
   get key() {
     return web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("profile"), this.initialAuth.toBuffer()],
+      [Buffer.from('profile'), this.initialAuth.toBuffer()],
       this.genie.programId
-    )[0];
+    )[0]
   }
 
   get profileMarkAccount() {
-    return  getAssociatedTokenAddressSync(this.genie.profileMark, this.key, true);
-  
+    return getAssociatedTokenAddressSync(this.genie.profileMark, this.key, true)
   }
 }

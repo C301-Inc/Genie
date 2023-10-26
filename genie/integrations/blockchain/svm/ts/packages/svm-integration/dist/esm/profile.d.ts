@@ -1,5 +1,5 @@
-import Genie from "./genie";
-import { web3 } from "@coral-xyz/anchor";
+import Genie from './genie';
+import { web3 } from '@coral-xyz/anchor';
 export default class Profile {
     genie: Genie;
     initialAuth: web3.PublicKey;

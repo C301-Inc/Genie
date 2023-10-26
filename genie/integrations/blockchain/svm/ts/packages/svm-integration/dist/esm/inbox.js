@@ -1,6 +1,7 @@
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "./utils";
-import { web3 } from "@coral-xyz/anchor";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from './utils';
+import { web3 } from '@coral-xyz/anchor';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+import Profile from './profile';
 ``;
 export default class Inbox {
     constructor(genie, initialAuth) {
@@ -12,10 +13,10 @@ export default class Inbox {
         try {
             const program = await this.genie.program;
             if (program === undefined) {
-                throw new Error("Genie not initialized");
+                throw new Error('Genie not initialized');
             }
             if (!this.genie.isInitialized) {
-                throw new Error("Genie is not initialized");
+                throw new Error('Genie is not initialized');
             }
             const inboxData = await program.account.inbox
                 .fetch(this.key)
@@ -23,7 +24,7 @@ export default class Inbox {
                 .catch((err) => undefined);
             if (inboxData !== undefined) {
                 this.isInitialized = true;
-                return "already initialized";
+                return 'already initialized';
             }
             const tx = await program.methods
                 .initializeInbox(platform, primaryKey)
@@ -37,7 +38,7 @@ export default class Inbox {
                 tokenProgram: TOKEN_PROGRAM_ID,
                 associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
                 systemProgram: web3.SystemProgram.programId,
-                rent: web3.SYSVAR_RENT_PUBKEY,
+                rent: web3.SYSVAR_RENT_PUBKEY
             })
                 .signers([initialAuthInboxKeypair])
                 .rpc({ skipPreflight: true })
@@ -52,8 +53,39 @@ export default class Inbox {
             throw new Error(err);
         }
     }
+    async registerOwner(initialAuthInboxKeypair, initialAuthProfileKeypair) {
+        try {
+            const program = await this.genie.program;
+            if (program === undefined) {
+                throw new Error('Genie not initialized');
+            }
+            if (!this.genie.isInitialized) {
+                throw new Error('Genie is not initialized');
+            }
+            const tx = await program.methods
+                .registerInboxOwner()
+                .accounts({
+                payer: this.genie.client.payer.publicKey,
+                inbox: this.key,
+                initialAuthInbox: initialAuthInboxKeypair.publicKey,
+                profile: new Profile(this.genie, initialAuthProfileKeypair.publicKey)
+                    .key,
+                initialAuthProfile: initialAuthProfileKeypair.publicKey
+            })
+                .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+                .rpc({ skipPreflight: true })
+                .then((res) => res)
+                .catch((error) => {
+                throw new Error(error);
+            });
+            return tx;
+        }
+        catch (err) {
+            throw new Error(err);
+        }
+    }
     get key() {
-        return web3.PublicKey.findProgramAddressSync([Buffer.from("inbox"), this.initialAuth.toBuffer()], this.genie.programId)[0];
+        return web3.PublicKey.findProgramAddressSync([Buffer.from('inbox'), this.initialAuth.toBuffer()], this.genie.programId)[0];
     }
     get inboxMarkAccount() {
         return getAssociatedTokenAddressSync(this.genie.inboxMark, this.key, true);

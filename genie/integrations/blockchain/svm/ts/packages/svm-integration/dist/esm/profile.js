@@ -1,6 +1,6 @@
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "./utils";
-import { web3 } from "@coral-xyz/anchor";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from './utils';
+import { web3 } from '@coral-xyz/anchor';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 ``;
 export default class Profile {
     constructor(genie, initialAuth) {
@@ -12,10 +12,10 @@ export default class Profile {
         try {
             const program = await this.genie.program;
             if (program === undefined) {
-                throw new Error("Genie not initialized");
+                throw new Error('Genie not initialized');
             }
             if (!this.genie.isInitialized) {
-                throw new Error("Genie is not initialized");
+                throw new Error('Genie is not initialized');
             }
             const profileData = await program.account.profile
                 .fetch(this.key)
@@ -23,7 +23,7 @@ export default class Profile {
                 .catch((err) => undefined);
             if (profileData !== undefined) {
                 this.isInitialized = true;
-                return "already initialized";
+                return 'already initialized';
             }
             const tx = await program.methods
                 .initializeProfile()
@@ -37,11 +37,11 @@ export default class Profile {
                 tokenProgram: TOKEN_PROGRAM_ID,
                 associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
                 systemProgram: web3.SystemProgram.programId,
-                rent: web3.SYSVAR_RENT_PUBKEY,
+                rent: web3.SYSVAR_RENT_PUBKEY
             })
                 .signers([initialAuthProfileKeypair])
                 .rpc({ skipPreflight: true })
-                .then(res => res)
+                .then((res) => res)
                 .catch((error) => {
                 throw new Error(error);
             });
@@ -53,7 +53,7 @@ export default class Profile {
         }
     }
     get key() {
-        return web3.PublicKey.findProgramAddressSync([Buffer.from("profile"), this.initialAuth.toBuffer()], this.genie.programId)[0];
+        return web3.PublicKey.findProgramAddressSync([Buffer.from('profile'), this.initialAuth.toBuffer()], this.genie.programId)[0];
     }
     get profileMarkAccount() {
         return getAssociatedTokenAddressSync(this.genie.profileMark, this.key, true);
