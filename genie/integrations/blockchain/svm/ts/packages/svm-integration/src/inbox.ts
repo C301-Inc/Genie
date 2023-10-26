@@ -13,15 +13,15 @@ export default class Inbox {
     this.initialAuth = initialAuth;
   }
 
-  async initialize(initialAuthInboxKeypair: web3.Keypair) {
+  async initialize(initialAuthInboxKeypair: web3.Keypair, platform: string, primaryKey: string) {
     try {
       const program = await this.genie.program;
 
       if (program === undefined) {
         throw new Error("Genie not initialized");
       }
-      if (this.genie.inboxMark === undefined) {
-        throw new Error("Genie inboxMark not initialized");
+         if (!this.genie.isInitialized) {
+        throw new Error("Genie is not initialized");
       }
       const inboxData = await program.account.inbox
         .fetch(this.key)
@@ -34,7 +34,7 @@ export default class Inbox {
       }
 
       const tx = await program.methods
-        .initializeInbox()
+        .initializeInbox(platform, primaryKey)
         .accounts({
           inbox: this.key,
           initialAuth: this.initialAuth,
@@ -51,11 +51,13 @@ export default class Inbox {
         .rpc({ skipPreflight: true })
         .then((res) => res)
         .catch((error) => {
-          throw new Error("inbox initialization failed");
+          throw new Error(error);
         });
       this.isInitialized = true;
       return tx;
-    } catch (err) {}
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 
   get key() {
@@ -66,8 +68,7 @@ export default class Inbox {
   }
 
   get inboxMarkAccount() {
-    return this.genie.inboxMark
-      ? getAssociatedTokenAddressSync(this.genie.inboxMark, this.key, true)
-      : undefined;
+    return getAssociatedTokenAddressSync(this.genie.inboxMark, this.key, true);
+
   }
 }

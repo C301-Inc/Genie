@@ -7,6 +7,6 @@ export default class Profile {
     constructor(genie: Genie, initialAuth: web3.PublicKey);
     initialize(initialAuthProfileKeypair: web3.Keypair): Promise<string>;
     get key(): web3.PublicKey;
-    get profileMarkAccount(): web3.PublicKey | undefined;
+    get profileMarkAccount(): web3.PublicKey;
 }
 //# sourceMappingURL=profile.d.ts.map

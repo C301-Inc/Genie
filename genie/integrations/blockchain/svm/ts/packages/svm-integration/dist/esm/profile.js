@@ -25,13 +25,12 @@ export default class Profile {
                 this.isInitialized = true;
                 return "already initialized";
             }
-            const profileMarkAccount = getAssociatedTokenAddressSync(this.genie.profileMark, this.key, true);
             const tx = await program.methods
                 .initializeProfile()
                 .accounts({
                 profile: this.key,
                 initialAuth: this.initialAuth,
-                profileMarkAccount: profileMarkAccount,
+                profileMarkAccount: this.profileMarkAccount,
                 profileMark: this.genie.profileMark,
                 genie: this.genie.key,
                 payer: this.genie.client.payer.publicKey,
@@ -57,9 +56,7 @@ export default class Profile {
         return web3.PublicKey.findProgramAddressSync([Buffer.from("profile"), this.initialAuth.toBuffer()], this.genie.programId)[0];
     }
     get profileMarkAccount() {
-        return this.genie.profileMark
-            ? getAssociatedTokenAddressSync(this.genie.profileMark, this.key, true)
-            : undefined;
+        return getAssociatedTokenAddressSync(this.genie.profileMark, this.key, true);
     }
 }
 //# sourceMappingURL=profile.js.map
