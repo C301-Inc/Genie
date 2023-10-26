@@ -8,14 +8,14 @@ export default class Inbox {
         this.genie = genie;
         this.initialAuth = initialAuth;
     }
-    async initialize(initialAuthInboxKeypair) {
+    async initialize(initialAuthInboxKeypair, platform, primaryKey) {
         try {
             const program = await this.genie.program;
             if (program === undefined) {
                 throw new Error("Genie not initialized");
             }
-            if (this.genie.inboxMark === undefined) {
-                throw new Error("Genie inboxMark not initialized");
+            if (!this.genie.isInitialized) {
+                throw new Error("Genie is not initialized");
             }
             const inboxData = await program.account.inbox
                 .fetch(this.key)
@@ -26,7 +26,7 @@ export default class Inbox {
                 return "already initialized";
             }
             const tx = await program.methods
-                .initializeInbox()
+                .initializeInbox(platform, primaryKey)
                 .accounts({
                 inbox: this.key,
                 initialAuth: this.initialAuth,
@@ -43,20 +43,20 @@ export default class Inbox {
                 .rpc({ skipPreflight: true })
                 .then((res) => res)
                 .catch((error) => {
-                throw new Error("inbox initialization failed");
+                throw new Error(error);
             });
             this.isInitialized = true;
             return tx;
         }
-        catch (err) { }
+        catch (err) {
+            throw new Error(err);
+        }
     }
     get key() {
         return web3.PublicKey.findProgramAddressSync([Buffer.from("inbox"), this.initialAuth.toBuffer()], this.genie.programId)[0];
     }
     get inboxMarkAccount() {
-        return this.genie.inboxMark
-            ? getAssociatedTokenAddressSync(this.genie.inboxMark, this.key, true)
-            : undefined;
+        return getAssociatedTokenAddressSync(this.genie.inboxMark, this.key, true);
     }
 }
 //# sourceMappingURL=inbox.js.map

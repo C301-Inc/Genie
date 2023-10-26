@@ -5,8 +5,8 @@ export default class Inbox {
     initialAuth: web3.PublicKey;
     isInitialized: boolean;
     constructor(genie: Genie, initialAuth: web3.PublicKey);
-    initialize(initialAuthInboxKeypair: web3.Keypair): Promise<string | undefined>;
+    initialize(initialAuthInboxKeypair: web3.Keypair, platform: string, primaryKey: string): Promise<string>;
     get key(): web3.PublicKey;
-    get inboxMarkAccount(): web3.PublicKey | undefined;
+    get inboxMarkAccount(): web3.PublicKey;
 }
 //# sourceMappingURL=inbox.d.ts.map
