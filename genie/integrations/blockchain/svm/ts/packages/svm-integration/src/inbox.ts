@@ -30,7 +30,7 @@ export default class Inbox {
 
       if (inboxData !== undefined) {
         this.isInitialized = true;
-        return this.key;
+        return "already initialized";
       }
 
       const tx = await program.methods
@@ -54,7 +54,7 @@ export default class Inbox {
           throw new Error("inbox initialization failed");
         });
       this.isInitialized = true;
-      return this.key;
+      return tx;
     } catch (err) {}
   }
 

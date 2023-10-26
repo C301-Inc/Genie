@@ -20,8 +20,8 @@ export default class Profile {
       if (program === undefined) {
         throw new Error("Genie not initialized");
       }
-      if (this.genie.profileMark === undefined) {
-        throw new Error("Genie profileMark not initialized");
+      if (!this.genie.isInitialized) {
+        throw new Error("Genie is not initialized");
       }
       const profileData = await program.account.profile
         .fetch(this.key)
@@ -30,15 +30,21 @@ export default class Profile {
 
       if (profileData !== undefined) {
         this.isInitialized = true;
-        return this.key;
+        return "already initialized";
       }
+
+       const profileMarkAccount = getAssociatedTokenAddressSync(
+      this.genie.profileMark,
+    this.key,
+    true
+  );
 
       const tx = await program.methods
         .initializeProfile()
         .accounts({
           profile: this.key,
           initialAuth: this.initialAuth,
-          profileMarkAccount: this.genie.profileMark,
+          profileMarkAccount: profileMarkAccount,
           profileMark: this.genie.profileMark,
           genie: this.genie.key,
           payer: this.genie.client.payer.publicKey,
@@ -49,13 +55,15 @@ export default class Profile {
         })
         .signers([initialAuthProfileKeypair])
         .rpc({ skipPreflight: true })
-        .then((res) => res)
+        .then(res => res)
         .catch((error) => {
-          throw new Error("profile initialization failed");
+          throw new Error(error);
         });
       this.isInitialized = true;
-      return this.key;
-    } catch (err) {}
+      return tx;
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 
   get key() {

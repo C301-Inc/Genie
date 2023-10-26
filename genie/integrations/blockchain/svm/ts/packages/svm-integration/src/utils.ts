@@ -1,6 +1,6 @@
 import { AnchorProvider, Program, Idl, web3 } from "@coral-xyz/anchor";
 import { PublicKey, Keypair, Connection, Transaction } from "@solana/web3.js";
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
+import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet"
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 export {
   TOKEN_PROGRAM_ID,
@@ -20,8 +20,8 @@ export class AnchorClient {
   wallet: NodeWallet;
   endpoint: string;
 
-  constructor(payerUint8ArrayString: string, endpoint?: string) {
-    const payer = AnchorClient.getKeypair(payerUint8ArrayString);
+  constructor(payer: web3.Keypair, endpoint?: string) {
+
     this.payer = payer;
     this.wallet = new NodeWallet(payer);
     this.endpoint = endpoint || "http://localhost:8899";
