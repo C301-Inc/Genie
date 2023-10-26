@@ -14,27 +14,22 @@ export default class Genie {
   client: AnchorClient;
 
   get key() {
-    return this.isInitialized
-      ? this.getGenieAddress(this.authority.publicKey)
-      : undefined;
+    return this.getGenieAddress(this.authority.publicKey)
+
   }
 
   get profileMark() {
-    return this.key
-      ? web3.PublicKey.findProgramAddressSync(
+    return web3.PublicKey.findProgramAddressSync(
           [Buffer.from("genie_profile"), this.key.toBuffer()],
           this.programId
-        )[0]
-      : undefined;
+        )[0];
   }
 
   get inboxMark() {
-    return this.key
-      ? web3.PublicKey.findProgramAddressSync(
+    return web3.PublicKey.findProgramAddressSync(
           [Buffer.from("genie_inbox"), this.key.toBuffer()],
           this.programId
-        )[0]
-      : undefined;
+        )[0];
   }
 
   get program() {
@@ -54,11 +49,10 @@ export default class Genie {
   ) {
     this.authority = authority;
     this.programId = programId;
-    const client = new AnchorClient(payer.secretKey.toString(), endpoint);
+    this.client = new AnchorClient(payer, endpoint);
   }
 
   async initialize(
-    programId: string,
     profileMarkLink: string = "https://arweave.net/5XNlZK1agbCZgdJS50TwEl9SG-mhz-rndidoFi37Hzc",
     inboxMarkLink: string = "https://arweave.net/JbzEfZANGNoLIzP35Yj7ziFWKUrkQWhstehjS8l3OjU",
     webpage: string = "https://www.geniebridge.link"
@@ -69,13 +63,6 @@ export default class Genie {
       if (program === undefined) {
         throw new Error("Program not initialized");
       }
-      if (
-        this.key === undefined ||
-        this.profileMark === undefined ||
-        this.inboxMark === undefined
-      ) {
-        throw new Error("genie not setted");
-      }
 
       const genieData = await program.account.genie
         .fetch(this.key)
@@ -84,7 +71,7 @@ export default class Genie {
 
       if (genieData !== undefined) {
         this.isInitialized = true;
-        return this.key;
+        return "already initialized";
       }
 
       const tx = await program.methods
@@ -109,9 +96,9 @@ export default class Genie {
           throw new Error("genie initialization failed");
         });
       this.isInitialized = true;
-      return this.key;
+      return tx;
     } catch (err) {
-      throw new Error(err);
+     throw new Error(err)
     }
   }
 

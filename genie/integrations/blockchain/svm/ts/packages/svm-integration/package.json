@@ -1,20 +1,13 @@
 {
   "name": "@genie-web3/svm-integration",
-  "version": "1.0.7",
+  "version": "1.0.25",
   "description": "",
-  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
   "license": "(MIT OR Apache-2.0)",
   "publishConfig": {
     "access": "public"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js"
-    }
   },
   "homepage": "https://github.com/C301-Inc/genie#readme",
   "bugs": {
@@ -28,15 +21,17 @@
   "author": "",
   "packageManager": "yarn@3.6.4",
   "devDependencies": {
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.8.8",
     "eslint": "^8.51.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
+    "rollup": "^2.60.2",
     "typedoc": "^0.25.2",
-    "typescript": "^5.2.2"
+    "typescript": "^4.5.2"
   },
   "scripts": {
-    "build": "rimraf dist/ && tsc",
+    "build": "rimraf dist/ && yarn build:node",
+    "build:node": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
     "docs": "typedoc --excludePrivate --includeVersion --out ../../../docs/src/.vuepress/dist/ts/ --readme none src/index.ts"
   },
   "dependencies": {
@@ -45,7 +40,9 @@
     "@metaplex-foundation/umi": "^0.8.9",
     "@metaplex-foundation/umi-web3js-adapters": "^0.8.9",
     "@solana/spl-token": "^0.3.8",
-    "@solana/web3.js": "^1.87.1"
+    "@solana/web3.js": "^1.87.1",
+    "ts-node": "^9.0.0",
+    "tslib": "^2.3.1"
   },
   "files": [
     "dist",
