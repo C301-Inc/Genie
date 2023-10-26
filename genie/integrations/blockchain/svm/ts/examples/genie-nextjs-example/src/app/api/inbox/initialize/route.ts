@@ -4,7 +4,8 @@ import { getGenie } from "@/app/lib/genie";
 import { Keypair, PublicKey } from "@solana/web3.js";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+    try{
+const body = await request.json();
   const initialAuth = Keypair.fromSecretKey(
     Uint8Array.from(JSON.parse(body.initialAuth)),
   );
@@ -16,4 +17,9 @@ export async function POST(request: NextRequest) {
   const txId = await inbox.initialize(initialAuth, body.platform, body.primaryKey);
 
   return NextResponse.json({ success: true, txId: txId });
+    }
+    catch(err){
+        return NextResponse.json({success: false, txId: JSON.stringify(err)})
+    }
+  
 }
