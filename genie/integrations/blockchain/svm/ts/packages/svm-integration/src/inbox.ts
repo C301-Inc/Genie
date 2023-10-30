@@ -100,6 +100,10 @@ export default class Inbox {
       throw new Error(err)
     }
   }
+  async getTokens() {
+    try {
+    } catch (err) {}
+  }
 
   get key() {
     return web3.PublicKey.findProgramAddressSync(
