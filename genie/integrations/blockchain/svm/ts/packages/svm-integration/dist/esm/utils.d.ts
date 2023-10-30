@@ -1,8 +1,9 @@
-import { AnchorProvider, Program, web3 } from "@coral-xyz/anchor";
-import { PublicKey, Keypair, Transaction } from "@solana/web3.js";
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
-export { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, } from "@solana/spl-token";
+import { AnchorProvider, Program, web3 } from '@coral-xyz/anchor';
+import { PublicKey, Keypair, Transaction } from '@solana/web3.js';
+import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+export { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
 export declare const METADATA_PROGRAM_ID: web3.PublicKey;
+export declare const getErrorMessage: (error: unknown) => string;
 export declare class AnchorClient {
     provider: AnchorProvider;
     payer: Keypair;

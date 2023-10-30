@@ -7,6 +7,11 @@ export default class Inbox {
     constructor(genie: Genie, initialAuth: web3.PublicKey);
     initialize(initialAuthInboxKeypair: web3.Keypair, platform: string, primaryKey: string): Promise<string>;
     registerOwner(initialAuthInboxKeypair: web3.Keypair, initialAuthProfileKeypair: web3.Keypair): Promise<string>;
+    getTokens(): Promise<{
+        mint: any;
+        amount: any;
+        decimals: any;
+    }[]>;
     get key(): web3.PublicKey;
     get inboxMarkAccount(): web3.PublicKey;
 }

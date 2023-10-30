@@ -1,11 +1,17 @@
-import { AnchorProvider, Program, web3 } from "@coral-xyz/anchor";
-import { PublicKey, Keypair, Connection, Transaction } from "@solana/web3.js";
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-export { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, } from "@solana/spl-token";
-import { toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
-import { MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
+import { AnchorProvider, Program, web3 } from '@coral-xyz/anchor';
+import { PublicKey, Keypair, Connection, Transaction } from '@solana/web3.js';
+import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+export { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { toWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
+import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 export const METADATA_PROGRAM_ID = toWeb3JsPublicKey(MPL_TOKEN_METADATA_PROGRAM_ID);
+export const getErrorMessage = (error) => {
+    if (error instanceof Error)
+        return error.message;
+    else
+        return String(error);
+};
 export class AnchorClient {
     constructor(payer, endpoint) {
         this.checkAccountDataIsNull = async (account) => {
@@ -31,7 +37,7 @@ export class AnchorClient {
                 if (data !== null)
                     idl = data;
                 else
-                    throw new Error("Idl Account has no data");
+                    throw new Error('Idl Account has no data');
             }
             catch (err) {
                 throw new Error(err.toString());
@@ -44,7 +50,7 @@ export class AnchorClient {
             tx.recentBlockhash = (await this.provider.connection.getLatestBlockhash()).blockhash;
             tx = Transaction.from(tx.serialize({
                 verifySignatures: false,
-                requireAllSignatures: false,
+                requireAllSignatures: false
             }));
             tx.partialSign(this.payer);
             if (signers) {
@@ -55,8 +61,8 @@ export class AnchorClient {
         this.getPayerPublicKey = () => this.payer.publicKey;
         this.payer = payer;
         this.wallet = new NodeWallet(payer);
-        this.endpoint = endpoint || "http://localhost:8899";
-        this.provider = new AnchorProvider(new Connection(this.endpoint, { commitment: "confirmed" }), this.wallet, { commitment: "confirmed" });
+        this.endpoint = endpoint || 'http://localhost:8899';
+        this.provider = new AnchorProvider(new Connection(this.endpoint, { commitment: 'confirmed' }), this.wallet, { commitment: 'confirmed' });
     }
 }
 AnchorClient.getPublicKey = (publicKeyString) => {
@@ -65,7 +71,7 @@ AnchorClient.getPublicKey = (publicKeyString) => {
         return publicKey;
     }
     catch (err) {
-        throw new Error("Not valid base58 encoded string");
+        throw new Error('Not valid base58 encoded string');
     }
 };
 AnchorClient.getKeypair = (uint8ArrayString) => {
@@ -74,7 +80,7 @@ AnchorClient.getKeypair = (uint8ArrayString) => {
         return newKeypair;
     }
     catch (err) {
-        throw new Error("Not valid uint8ArrayString");
+        throw new Error('Not valid uint8ArrayString');
     }
 };
 AnchorClient.getPublicKeys = (publicKeyStrings) => {
@@ -84,7 +90,7 @@ AnchorClient.getPublicKeys = (publicKeyStrings) => {
             result[key] = new PublicKey(value);
         }
         catch (err) {
-            throw new Error("Not valid base58 encoded string");
+            throw new Error('Not valid base58 encoded string');
         }
     }
     return result;
@@ -99,6 +105,6 @@ AnchorClient.getATAAddress = (mint, owner, allowOwnerOffCurve) => {
     }
 };
 export const getMetadataAddress = (mint) => {
-    return web3.PublicKey.findProgramAddressSync([Buffer.from("metadata"), METADATA_PROGRAM_ID.toBuffer(), mint.toBuffer()], METADATA_PROGRAM_ID)[0];
+    return web3.PublicKey.findProgramAddressSync([Buffer.from('metadata'), METADATA_PROGRAM_ID.toBuffer(), mint.toBuffer()], METADATA_PROGRAM_ID)[0];
 };
 //# sourceMappingURL=utils.js.map
