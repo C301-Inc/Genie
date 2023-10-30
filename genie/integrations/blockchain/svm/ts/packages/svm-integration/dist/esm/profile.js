@@ -1,4 +1,4 @@
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from './utils';
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, getErrorMessage } from './utils';
 import { web3 } from '@coral-xyz/anchor';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 ``;
@@ -43,13 +43,13 @@ export default class Profile {
                 .rpc({ skipPreflight: true })
                 .then((res) => res)
                 .catch((error) => {
-                throw new Error(error);
+                throw new Error(getErrorMessage(error));
             });
             this.isInitialized = true;
             return tx;
         }
         catch (err) {
-            throw new Error(err);
+            throw new Error(getErrorMessage(err));
         }
     }
     get key() {

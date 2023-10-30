@@ -106,7 +106,30 @@ export default class Inbox {
   }
   async getTokens() {
     try {
-    } catch (err) {}
+      const list = await this.genie.client.provider.connection
+        .getParsedTokenAccountsByOwner(this.key, {
+          programId: TOKEN_PROGRAM_ID
+        })
+        .then((res) =>
+          res.value
+            .filter((f) => {
+              return f.account.data.parsed.info.tokenAmount.decimals !== 0
+            })
+            .map((v) => {
+              return {
+                mint: v.account.data.parsed.info.mint,
+                amount: v.account.data.parsed.info.tokenAmount.amount,
+                decimals: v.account.data.parsed.info.tokenAmount.decimals
+              }
+            })
+        )
+        .catch((error) => {
+          throw new Error(getErrorMessage(error))
+        })
+      return list
+    } catch (err) {
+      throw new Error(getErrorMessage(err))
+    }
   }
 
   get key() {

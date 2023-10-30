@@ -1,6 +1,6 @@
-import * as anchor from "@coral-xyz/anchor";
-import { web3 } from "@coral-xyz/anchor";
-import { AnchorClient } from "./utils";
+import * as anchor from '@coral-xyz/anchor';
+import { web3 } from '@coral-xyz/anchor';
+import { AnchorClient } from './utils';
 export default class Genie {
     authority: web3.Keypair;
     isInitialized: boolean;
