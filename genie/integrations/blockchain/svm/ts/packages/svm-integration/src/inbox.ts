@@ -1,5 +1,9 @@
 import Genie from './genie'
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from './utils'
+import {
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getErrorMessage
+} from './utils'
 import { web3 } from '@coral-xyz/anchor'
 import { getAssociatedTokenAddressSync } from '@solana/spl-token'
 import Profile from './profile'
@@ -93,11 +97,11 @@ export default class Inbox {
         .rpc({ skipPreflight: true })
         .then((res) => res)
         .catch((error) => {
-          throw new Error(error)
+          throw new Error(getErrorMessage(error))
         })
       return tx
     } catch (err) {
-      throw new Error(err)
+      throw new Error(getErrorMessage(err))
     }
   }
   async getTokens() {
