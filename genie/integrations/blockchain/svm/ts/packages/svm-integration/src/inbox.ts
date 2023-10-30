@@ -2,12 +2,13 @@ import Genie from './genie'
 import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  getErrorMessage
+  getErrorMessage,
+  chunk
 } from './utils'
 import { web3 } from '@coral-xyz/anchor'
 import { getAssociatedTokenAddressSync } from '@solana/spl-token'
+import { Metaplex } from '@metaplex-foundation/js'
 import Profile from './profile'
-;``
 export default class Inbox {
   genie: Genie
   initialAuth: web3.PublicKey
@@ -115,6 +116,9 @@ export default class Inbox {
             .filter((f) => {
               return f.account.data.parsed.info.tokenAmount.decimals !== 0
             })
+            .filter(
+              (f) => f.account.data.parsed.info.tokenAmount.amount !== '0'
+            )
             .map((v) => {
               return {
                 mint: v.account.data.parsed.info.mint,
@@ -123,6 +127,73 @@ export default class Inbox {
               }
             })
         )
+        .catch((error) => {
+          throw new Error(getErrorMessage(error))
+        })
+      return list
+    } catch (err) {
+      throw new Error(getErrorMessage(err))
+    }
+  }
+
+  async getNfts() {
+    try {
+      const metaplex = new Metaplex(this.genie.client.provider.connection)
+      const list = await this.genie.client.provider.connection
+        .getParsedTokenAccountsByOwner(this.key, {
+          programId: TOKEN_PROGRAM_ID
+        })
+        .then((res) =>
+          res.value
+            .filter((f) => {
+              return f.account.data.parsed.info.tokenAmount.decimals === 0
+            })
+            .filter(
+              (f) => f.account.data.parsed.info.tokenAmount.amount !== '0'
+            )
+            .map((v) => {
+              return {
+                mint: v.account.data.parsed.info.mint,
+                amount: v.account.data.parsed.info.tokenAmount.amount,
+                decimals: v.account.data.parsed.info.tokenAmount.decimals
+              }
+            })
+        )
+        .then((res) => {
+          const chunks = chunk(res, 100)
+
+          return Promise.all(
+            chunks.map(async (v) => {
+              const temp = await metaplex.nfts().findAllByMintList({
+                mints: v.map((k) => new web3.PublicKey(k.mint))
+              })
+              return temp
+            })
+          )
+        })
+        .then((res) => {
+          return res.flat()
+        })
+        .then((res) => {
+          return res.filter((v) => v !== null)
+        })
+        .then((res) => {
+          return Promise.all(
+            res.map((v) => {
+              //@ts-ignore
+              return metaplex.nfts().findByMetadata({ metadata: v?.address })
+            })
+          )
+        })
+        .then((res) => {
+          return res.map((v) => {
+            return {
+              mint: v.mint.address.toBase58(),
+              name: v.json?.name,
+              collection: v.collection?.address?.toBase58()
+            }
+          })
+        })
         .catch((error) => {
           throw new Error(getErrorMessage(error))
         })

@@ -12,6 +12,16 @@ export const getErrorMessage = (error) => {
     else
         return String(error);
 };
+export const chunk = (array, size) => {
+    const chunked = [];
+    let index = 0;
+    while (index < array.length) {
+        //@ts-ignore
+        chunked.push(array.slice(index, size + index));
+        index += size;
+    }
+    return chunked;
+};
 export class AnchorClient {
     constructor(payer, endpoint) {
         this.checkAccountDataIsNull = async (account) => {

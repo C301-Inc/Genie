@@ -12,6 +12,11 @@ export default class Inbox {
         amount: any;
         decimals: any;
     }[]>;
+    getNfts(): Promise<{
+        mint: string;
+        name: string | undefined;
+        collection: string | undefined;
+    }[]>;
     get key(): web3.PublicKey;
     get inboxMarkAccount(): web3.PublicKey;
 }
