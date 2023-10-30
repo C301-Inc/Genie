@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Inbox } from "@genie-web3/svm-integration";
 import { getGenie } from "@/app/lib/genie";
 import { Keypair, PublicKey } from "@solana/web3.js";
+import { getErrorMessage } from "@/app/utils";
 
 export async function POST(request: NextRequest) {
     try{
@@ -22,7 +23,9 @@ const body = await request.json();
   return NextResponse.json({ success: true, txId: txId });
     }
     catch(err){
-        return NextResponse.json({success:false, txId: JSON.stringify(err)})
+        
+        //@ts-ignore
+        return NextResponse.json({success:false, txId: getErrorMessage(err)})
     }
   
 }
