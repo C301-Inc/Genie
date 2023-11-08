@@ -1,113 +1,242 @@
-import Image from "next/image";
+'use client'
+import Image from 'next/image'
+import { useCallback, useState, useEffect, useRef } from 'react'
+import {
+  TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+  createAssociatedTokenAccountInstruction,
+  createTransferInstruction
+} from '@solana/spl-token'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import {
+  PublicKey,
+  TransactionInstruction,
+  Transaction,
+  SystemProgram
+} from '@solana/web3.js'
+import { getErrorMessage } from './utils'
 
 export default function Home() {
+  const [inboxKey, setInboxKey] = useState<string>('')
+  const [tokenList, setTokenList] = useState<
+    Array<{ mint: string; amount: string; decimals: string; selected: boolean }>
+  >([])
+  const [amount, setAmount] = useState<string>('0')
+
+  const conn = useConnection()
+  const wallet = useWallet()
+
+  const sendToken = async (mint: string) => {
+    try {
+      if (mint === 'Native Solana') {
+        console.log('here')
+        const destPublicKey = new PublicKey(inboxKey)
+        const transaction = new Transaction().add(
+          SystemProgram.transfer({
+            //@ts-ignore
+            fromPubkey: wallet.publicKey,
+            toPubkey: destPublicKey,
+            lamports: BigInt(amount)
+          })
+        )
+        //@ts-ignore
+        transaction.feePayer = wallet.publicKey
+        wallet.sendTransaction(transaction, conn.connection)
+      } else {
+        const mintToken = new PublicKey(mint)
+
+        const fromTokenAccount = getAssociatedTokenAddressSync(
+          mintToken,
+          //@ts-ignore
+          wallet.publicKey
+        )
+
+        const destPublicKey = new PublicKey(inboxKey)
+
+        // Get the derived address of the destination wallet which will hold the custom token
+        const associatedDestinationTokenAddr = getAssociatedTokenAddressSync(
+          mintToken,
+          destPublicKey
+        )
+
+        const receiverAccount = await conn.connection.getAccountInfo(
+          associatedDestinationTokenAddr
+        )
+
+        const instructions: TransactionInstruction[] = []
+
+        if (receiverAccount === null) {
+          instructions.push(
+            createAssociatedTokenAccountInstruction(
+              //@ts-ignore
+              wallet.publicKey,
+              associatedDestinationTokenAddr,
+              destPublicKey,
+              mintToken
+            )
+          )
+        }
+
+        instructions.push(
+          createTransferInstruction(
+            fromTokenAccount,
+            associatedDestinationTokenAddr,
+            //@ts-ignore
+            wallet.publicKey,
+            BigInt(amount)
+          )
+        )
+
+        const transaction = new Transaction().add(...instructions)
+        //@ts-ignore
+        transaction.feePayer = wallet.publicKey
+        wallet.sendTransaction(transaction, conn.connection)
+      }
+    } catch (err) {}
+  }
+
+  const onChangeKey = (e: any) => {
+    setInboxKey(e)
+    return
+  }
+
+  const onChangeAmount = (e: any) => {
+    setAmount(e)
+    return
+  }
+
+  useEffect(() => {
+    const getTokens = async () => {
+      const list = await conn.connection
+        //@ts-ignore
+        .getParsedTokenAccountsByOwner(wallet.publicKey, {
+          programId: TOKEN_PROGRAM_ID
+        })
+        .then((res) =>
+          res.value
+            .filter((f) => {
+              return f.account.data.parsed.info.tokenAmount.decimals !== 0
+            })
+            .filter(
+              (f) => f.account.data.parsed.info.tokenAmount.amount !== '0'
+            )
+            .map((v) => {
+              return {
+                mint: v.account.data.parsed.info.mint,
+                amount: v.account.data.parsed.info.tokenAmount.amount,
+                decimals: v.account.data.parsed.info.tokenAmount.decimals,
+                selected: false
+              }
+            })
+        )
+        .catch((error) => {
+          throw new Error(getErrorMessage(error))
+        })
+
+      const solanaBalance = await conn.connection
+        //@ts-ignore
+        .getBalance(wallet.publicKey)
+        .then((res) => {
+          return {
+            mint: 'Native Solana',
+            amount: res.toString(),
+            decimals: '9',
+            selected: false
+          }
+        })
+      list.splice(0, 0, solanaBalance)
+      setTokenList(list)
+    }
+    getTokens()
+  }, [wallet.publicKey])
+
+  const setSelectedToken = (i: number) => {
+    if (tokenList.length > i) {
+      tokenList.map((v, j) => {
+        if (j === i) {
+          v.selected = true
+          return v
+        } else {
+          v.selected = false
+          return v
+        }
+      })
+      setTokenList([...tokenList])
+    }
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <main
+      style={{ display: 'flex', flexDirection: 'column', margin: '12px 12px' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <input
+          style={{ width: '80%', height: '40px' }}
+          placeholder="Enter Inbox Key Here"
+          onChange={(e) => {
+            onChangeKey(e.target.value)
+          }}
+          value={inboxKey}></input>{' '}
+        <button
+          style={{ width: '20%' }}
+          onClick={async () => {
+            try {
+              await sendToken(
+                tokenList.findLast((v) => v.selected === true)?.mint || ''
+              )
+            } catch (err) {
+              alert('Token Not Selected')
+            }
+          }}>
+          send
+        </button>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          marginTop: '24px'
+        }}>
+        {tokenList.map((v, i) => {
+          return (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                border: v.selected ? 'solid 2px blue' : 'solid 0.5px grey',
+                height: '60px'
+              }}
+              onClick={() => {
+                setSelectedToken(i)
+              }}>
+              <div style={{ width: '80%' }}>
+                <div>{`Mint Address : ${v.mint}`}</div>
+                <div>{`Current Amount : ${v.amount}`}</div>
+                <div>{`Decimals : ${v.decimals}`}</div>
+              </div>
+              <div
+                style={{
+                  width: '20%',
+                  height: '60px',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                <input
+                  disabled={!v.selected}
+                  style={{}}
+                  placeholder="Enter Send Amount"
+                  value={v.selected ? amount : 'Not Selected'}
+                  pattern="\d*"
+                  onChange={(e) => {
+                    onChangeAmount(e.target.value)
+                  }}></input>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </main>
-  );
+  )
 }
