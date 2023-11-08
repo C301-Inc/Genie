@@ -105,6 +105,14 @@ export default class Inbox {
                 .catch((error) => {
                 throw new Error(getErrorMessage(error));
             });
+            const solanaBalance = await this.genie.client.provider.connection
+                .getBalance(this.key)
+                .then((res) => res - 3549600);
+            list.splice(0, 0, {
+                mint: 'native sol',
+                amount: solanaBalance.toString(),
+                decimals: 9
+            });
             return list;
         }
         catch (err) {
@@ -165,6 +173,37 @@ export default class Inbox {
                 throw new Error(getErrorMessage(error));
             });
             return list;
+        }
+        catch (err) {
+            throw new Error(getErrorMessage(err));
+        }
+    }
+    async sendToken(initialAuthInboxKeypair, initialAuthProfileKeypair) {
+        try {
+            const program = await this.genie.program;
+            if (program === undefined) {
+                throw new Error('Genie not initialized');
+            }
+            if (!this.genie.isInitialized) {
+                throw new Error('Genie is not initialized');
+            }
+            const tx = await program.methods
+                .registerInboxOwner()
+                .accounts({
+                payer: this.genie.client.payer.publicKey,
+                inbox: this.key,
+                initialAuthInbox: initialAuthInboxKeypair.publicKey,
+                profile: new Profile(this.genie, initialAuthProfileKeypair.publicKey)
+                    .key,
+                initialAuthProfile: initialAuthProfileKeypair.publicKey
+            })
+                .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+                .rpc({ skipPreflight: true })
+                .then((res) => res)
+                .catch((error) => {
+                throw new Error(getErrorMessage(error));
+            });
+            return tx;
         }
         catch (err) {
             throw new Error(getErrorMessage(err));
