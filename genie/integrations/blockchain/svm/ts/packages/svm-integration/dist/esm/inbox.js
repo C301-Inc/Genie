@@ -1,5 +1,6 @@
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, getErrorMessage, chunk } from './utils';
 import { web3 } from '@coral-xyz/anchor';
+import * as anchor from '@coral-xyz/anchor';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { Metaplex } from '@metaplex-foundation/js';
 import Profile from './profile';
@@ -165,6 +166,45 @@ export default class Inbox {
                 throw new Error(getErrorMessage(error));
             });
             return list;
+        }
+        catch (err) {
+            throw new Error(getErrorMessage(err));
+        }
+    }
+    async sendToken(initialAuthProfileKeypair, receiverInbox, mint, amount) {
+        try {
+            const program = await this.genie.program;
+            if (program === undefined) {
+                throw new Error('Genie not initialized');
+            }
+            if (!this.genie.isInitialized) {
+                throw new Error('Genie is not initialized');
+            }
+            const senderTokenAccount = getAssociatedTokenAddressSync(mint, this.key, true);
+            const receiverInboxTokenAccount = getAssociatedTokenAddressSync(mint, receiverInbox, true);
+            const tx = await program.methods
+                .sendToken(new anchor.BN(amount))
+                .accounts({
+                payer: this.genie.client.payer.publicKey,
+                mint: mint,
+                senderProfileAuth: initialAuthProfileKeypair.publicKey,
+                senderProfile: new Profile(this.genie, initialAuthProfileKeypair.publicKey).key,
+                senderInbox: this.key,
+                senderTokenAccount: senderTokenAccount,
+                receiverInbox,
+                receiverTokenAccount: receiverInboxTokenAccount,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+                systemProgram: web3.SystemProgram.programId,
+                rent: web3.SYSVAR_RENT_PUBKEY
+            })
+                .signers([initialAuthProfileKeypair])
+                .rpc({ skipPreflight: true })
+                .then((res) => res)
+                .catch((error) => {
+                throw new Error(getErrorMessage(error));
+            });
+            return tx;
         }
         catch (err) {
             throw new Error(getErrorMessage(err));

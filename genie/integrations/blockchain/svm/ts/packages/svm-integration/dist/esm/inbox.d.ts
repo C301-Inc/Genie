@@ -17,6 +17,7 @@ export default class Inbox {
         name: string | undefined;
         collection: string | undefined;
     }[]>;
+    sendToken(initialAuthProfileKeypair: web3.Keypair, receiverInbox: web3.PublicKey, mint: web3.PublicKey, amount: string): Promise<string>;
     get key(): web3.PublicKey;
     get inboxMarkAccount(): web3.PublicKey;
 }
