@@ -6,6 +6,7 @@ import {
   chunk
 } from './utils'
 import { web3 } from '@coral-xyz/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import { getAssociatedTokenAddressSync } from '@solana/spl-token'
 import { Metaplex } from '@metaplex-foundation/js'
 import Profile from './profile'
@@ -130,14 +131,7 @@ export default class Inbox {
         .catch((error) => {
           throw new Error(getErrorMessage(error))
         })
-      const solanaBalance = await this.genie.client.provider.connection
-        .getBalance(this.key)
-        .then((res) => res - 3549600)
-      list.splice(0, 0, {
-        mint: 'native sol',
-        amount: solanaBalance.toString(),
-        decimals: 9
-      })
+
       return list
     } catch (err) {
       throw new Error(getErrorMessage(err))
@@ -212,8 +206,10 @@ export default class Inbox {
   }
 
   async sendToken(
-    initialAuthInboxKeypair: web3.Keypair,
-    initialAuthProfileKeypair: web3.Keypair
+    initialAuthProfileKeypair: web3.Keypair,
+    receiverInbox: web3.PublicKey,
+    mint: web3.PublicKey,
+    amount: string
   ) {
     try {
       const program = await this.genie.program
@@ -225,17 +221,38 @@ export default class Inbox {
         throw new Error('Genie is not initialized')
       }
 
+      const senderTokenAccount = getAssociatedTokenAddressSync(
+        mint,
+        this.key,
+        true
+      )
+
+      const receiverInboxTokenAccount = getAssociatedTokenAddressSync(
+        mint,
+        receiverInbox,
+        true
+      )
+
       const tx = await program.methods
-        .registerInboxOwner()
+        .sendToken(new anchor.BN(amount))
         .accounts({
           payer: this.genie.client.payer.publicKey,
-          inbox: this.key,
-          initialAuthInbox: initialAuthInboxKeypair.publicKey,
-          profile: new Profile(this.genie, initialAuthProfileKeypair.publicKey)
-            .key,
-          initialAuthProfile: initialAuthProfileKeypair.publicKey
+          mint: mint,
+          senderProfileAuth: initialAuthProfileKeypair.publicKey,
+          senderProfile: new Profile(
+            this.genie,
+            initialAuthProfileKeypair.publicKey
+          ).key,
+          senderInbox: this.key,
+          senderTokenAccount: senderTokenAccount,
+          receiverInbox,
+          receiverTokenAccount: receiverInboxTokenAccount,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: web3.SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY
         })
-        .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+        .signers([initialAuthProfileKeypair])
         .rpc({ skipPreflight: true })
         .then((res) => res)
         .catch((error) => {
