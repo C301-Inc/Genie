@@ -56,6 +56,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blazity/next-image-proxy@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@blazity/next-image-proxy@npm:1.0.2"
+  dependencies:
+    isomorphic-unfetch: "npm:^3.1.0"
+    lodash.merge: "npm:^4.6.2"
+    user-agents: "npm:^1.0.934"
+  peerDependencies:
+    next: ">=9.0.0"
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: b664d3a35032a452c76004d03f9ad4de0df0db0c385a10783807e39729b59c3698e9acc510c24fefbba41343607cdf2387455e349517371d049457db1a45a745
+  languageName: node
+  linkType: hard
+
 "@bundlr-network/client@npm:^0.8.8":
   version: 0.8.9
   resolution: "@bundlr-network/client@npm:0.8.9"
@@ -596,9 +611,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genie-web3/svm-integration@npm:^1.0.37":
-  version: 1.0.37
-  resolution: "@genie-web3/svm-integration@npm:1.0.37"
+"@genie-web3/svm-integration@npm:^1.0.42":
+  version: 1.0.42
+  resolution: "@genie-web3/svm-integration@npm:1.0.42"
   dependencies:
     "@coral-xyz/anchor": "npm:^0.29.0"
     "@metaplex-foundation/js": "npm:^0.19.5"
@@ -607,9 +622,10 @@ __metadata:
     "@metaplex-foundation/umi-web3js-adapters": "npm:^0.8.9"
     "@solana/spl-token": "npm:^0.3.8"
     "@solana/web3.js": "npm:^1.87.1"
+    tailwindcss: "npm:^3.3.5"
     ts-node: "npm:^9.0.0"
     tslib: "npm:^2.3.1"
-  checksum: eec2b92a30d78e4d2fe4b94616b515384c06641dd8d71e945776ba75867bf92d5739535c9c842d51fde9af20321c21517314159e46e1585f58a5b6283def7672
+  checksum: 52c4c3d8ac5bc8e52d42df9045c2a274a422b35ac8c05af5489e1366a1c46cad268fe35ea6fa9bf4a89e05ed03c2bad1b6048c6afe866585c910c8c146f0a439
   languageName: node
   linkType: hard
 
@@ -1117,6 +1133,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metaplex-foundation/umi-web3js-adapters@npm:^0.8.10":
+  version: 0.8.10
+  resolution: "@metaplex-foundation/umi-web3js-adapters@npm:0.8.10"
+  dependencies:
+    buffer: "npm:^6.0.3"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^0.8.10
+    "@solana/web3.js": ^1.72.0
+  checksum: 49b4178a3aa1ab5086f9ac86b259a393c3982b34fc98fb2f7b03ebe17c59643d804c48fe582eaa9ecd61a0c7fcd7a9e25a5fc629ed25d77bbb00964f43a69fc5
+  languageName: node
+  linkType: hard
+
 "@metaplex-foundation/umi-web3js-adapters@npm:^0.8.9":
   version: 0.8.9
   resolution: "@metaplex-foundation/umi-web3js-adapters@npm:0.8.9"
@@ -1126,6 +1154,17 @@ __metadata:
     "@metaplex-foundation/umi": ^0.8.9
     "@solana/web3.js": ^1.72.0
   checksum: 2077d45c877c08d7a1ef62294974d09c23635ac923727582b88495421d57908b6383c3d250b327dde851c629e09d71591a054a042ba31ef2506d5674b8d3379c
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi@npm:^0.8.10":
+  version: 0.8.10
+  resolution: "@metaplex-foundation/umi@npm:0.8.10"
+  dependencies:
+    "@metaplex-foundation/umi-options": "npm:^0.8.9"
+    "@metaplex-foundation/umi-public-keys": "npm:^0.8.9"
+    "@metaplex-foundation/umi-serializers": "npm:^0.8.9"
+  checksum: 3c70661a381fc07cff20da78f5aed8f85d4c969f8d652c922459ae2782c7bcca6333cc1dd8702f4163f3accaebdae1bb9c9c01a8b633ac0a3f8b0e2cf40a1714
   languageName: node
   linkType: hard
 
@@ -4932,7 +4971,12 @@ __metadata:
   resolution: "genie-nextjs-example@workspace:."
   dependencies:
     "@babel/runtime": "npm:^7.23.2"
-    "@genie-web3/svm-integration": "npm:^1.0.37"
+    "@blazity/next-image-proxy": "npm:^1.0.2"
+    "@genie-web3/svm-integration": "npm:^1.0.42"
+    "@metaplex-foundation/js": "npm:^0.19.5"
+    "@metaplex-foundation/mpl-token-metadata": "npm:^3.1.0"
+    "@metaplex-foundation/umi": "npm:^0.8.10"
+    "@metaplex-foundation/umi-web3js-adapters": "npm:^0.8.10"
     "@solana/spl-token": "npm:^0.3.8"
     "@solana/wallet-adapter-base": "npm:^0.9.23"
     "@solana/wallet-adapter-react": "npm:^0.15.35"
@@ -5458,6 +5502,16 @@ __metadata:
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
   checksum: 228cfa503fadc2c31596ab06ed6aa82c9976eec2bfd83397e7eaf06d0ccf42cd1dfd6743bf9aeb01aebd4156d009994c5f76ea898d2832c1fe342da923ca457d
+  languageName: node
+  linkType: hard
+
+"isomorphic-unfetch@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "isomorphic-unfetch@npm:3.1.0"
+  dependencies:
+    node-fetch: "npm:^2.6.1"
+    unfetch: "npm:^4.2.0"
+  checksum: d3b61fca06304db692b7f76bdfd3a00f410e42cfa7403c3b250546bf71589d18cf2f355922f57198e4cc4a9872d3647b20397a5c3edf1a347c90d57c83cf2a89
   languageName: node
   linkType: hard
 
@@ -8001,6 +8055,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unfetch@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "unfetch@npm:4.2.0"
+  checksum: a5c0a896a6f09f278b868075aea65652ad185db30e827cb7df45826fe5ab850124bf9c44c4dafca4bf0c55a0844b17031e8243467fcc38dd7a7d435007151f1b
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^3.0.0":
   version: 3.0.0
   resolution: "unique-filename@npm:3.0.0"
@@ -8037,6 +8098,15 @@ __metadata:
   bin:
     update-browserslist-db: cli.js
   checksum: e52b8b521c78ce1e0c775f356cd16a9c22c70d25f3e01180839c407a5dc787fb05a13f67560cbaf316770d26fa99f78f1acd711b1b54a4f35d4820d4ea7136e6
+  languageName: node
+  linkType: hard
+
+"user-agents@npm:^1.0.934":
+  version: 1.1.17
+  resolution: "user-agents@npm:1.1.17"
+  dependencies:
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: b2014011f0115fd37010a0b3b7863861b8afea803350ef05eee5ba867a07904766f07fc8bc532371db41a7c1516d952294d418947ed8b06b044ce074e42fb22b
   languageName: node
   linkType: hard
 

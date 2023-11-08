@@ -3,7 +3,12 @@
   "packageManager": "yarn@4.0.0",
   "dependencies": {
     "@babel/runtime": "^7.23.2",
-    "@genie-web3/svm-integration": "^1.0.37",
+    "@blazity/next-image-proxy": "^1.0.2",
+    "@genie-web3/svm-integration": "^1.0.42",
+    "@metaplex-foundation/js": "^0.19.5",
+    "@metaplex-foundation/mpl-token-metadata": "^3.1.0",
+    "@metaplex-foundation/umi": "^0.8.10",
+    "@metaplex-foundation/umi-web3js-adapters": "^0.8.10",
     "@solana/spl-token": "^0.3.8",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
