@@ -10,7 +10,7 @@ pub use instructions::*;
 pub use state::*;
 pub use utils::*;
 
-declare_id!("DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK");
+declare_id!("14t9ipmpiRmQpPuizYwenHgp3y8jG5E4sezwDSS5dM7N");
 
 #[program]
 pub mod genie {
