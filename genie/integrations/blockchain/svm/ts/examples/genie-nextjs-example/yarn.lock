@@ -611,9 +611,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genie-web3/svm-integration@npm:^1.0.42":
-  version: 1.0.42
-  resolution: "@genie-web3/svm-integration@npm:1.0.42"
+"@genie-web3/svm-integration@npm:^1.0.47":
+  version: 1.0.47
+  resolution: "@genie-web3/svm-integration@npm:1.0.47"
   dependencies:
     "@coral-xyz/anchor": "npm:^0.29.0"
     "@metaplex-foundation/js": "npm:^0.19.5"
@@ -625,7 +625,7 @@ __metadata:
     tailwindcss: "npm:^3.3.5"
     ts-node: "npm:^9.0.0"
     tslib: "npm:^2.3.1"
-  checksum: 52c4c3d8ac5bc8e52d42df9045c2a274a422b35ac8c05af5489e1366a1c46cad268fe35ea6fa9bf4a89e05ed03c2bad1b6048c6afe866585c910c8c146f0a439
+  checksum: efbd7741dc4bf4cd043c802e59d29b479ff4903ace356ef564f06098829072493b4c4e6bb53f459d1ebc6e75c017d52ec260f2fdfd751af0349755af3dda20cb
   languageName: node
   linkType: hard
 
@@ -4972,7 +4972,7 @@ __metadata:
   dependencies:
     "@babel/runtime": "npm:^7.23.2"
     "@blazity/next-image-proxy": "npm:^1.0.2"
-    "@genie-web3/svm-integration": "npm:^1.0.42"
+    "@genie-web3/svm-integration": "npm:^1.0.47"
     "@metaplex-foundation/js": "npm:^0.19.5"
     "@metaplex-foundation/mpl-token-metadata": "npm:^3.1.0"
     "@metaplex-foundation/umi": "npm:^0.8.10"

@@ -5,14 +5,18 @@ import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
   createAssociatedTokenAccountInstruction,
-  createTransferInstruction
+  createTransferInstruction,
+  createSyncNativeInstruction,
+  NATIVE_MINT,
+  AccountLayout
 } from '@solana/spl-token'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
   PublicKey,
   TransactionInstruction,
   Transaction,
-  SystemProgram
+  SystemProgram,
+  Keypair
 } from '@solana/web3.js'
 import { Metaplex } from '@metaplex-foundation/js'
 import { getErrorMessage, chunk } from './utils'
@@ -39,16 +43,43 @@ export default function Home() {
   const sendToken = async (mint: string) => {
     try {
       if (mint === 'Native Solana') {
-        console.log('here')
         const destPublicKey = new PublicKey(inboxKey)
-        const transaction = new Transaction().add(
+
+        const associatedDestinationTokenAddr = getAssociatedTokenAddressSync(
+          NATIVE_MINT,
+          destPublicKey,
+          true
+        )
+        const receiverAccount = await conn.connection.getAccountInfo(
+          associatedDestinationTokenAddr
+        )
+        const instructions: TransactionInstruction[] = []
+
+        if (receiverAccount === null) {
+          instructions.push(
+            createAssociatedTokenAccountInstruction(
+              //@ts-ignore
+              wallet.publicKey,
+              associatedDestinationTokenAddr,
+              destPublicKey,
+              NATIVE_MINT
+            )
+          )
+        }
+        instructions.push(
           SystemProgram.transfer({
             //@ts-ignore
             fromPubkey: wallet.publicKey,
-            toPubkey: destPublicKey,
+            toPubkey: associatedDestinationTokenAddr,
             lamports: BigInt(amount)
           })
         )
+        instructions.push(
+          createSyncNativeInstruction(associatedDestinationTokenAddr)
+        )
+
+        const transaction = new Transaction().add(...instructions)
+
         //@ts-ignore
         transaction.feePayer = wallet.publicKey
         wallet.sendTransaction(transaction, conn.connection)

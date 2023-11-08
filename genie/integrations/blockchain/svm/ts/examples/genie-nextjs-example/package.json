@@ -4,7 +4,7 @@
   "dependencies": {
     "@babel/runtime": "^7.23.2",
     "@blazity/next-image-proxy": "^1.0.2",
-    "@genie-web3/svm-integration": "^1.0.42",
+    "@genie-web3/svm-integration": "^1.0.47",
     "@metaplex-foundation/js": "^0.19.5",
     "@metaplex-foundation/mpl-token-metadata": "^3.1.0",
     "@metaplex-foundation/umi": "^0.8.10",
