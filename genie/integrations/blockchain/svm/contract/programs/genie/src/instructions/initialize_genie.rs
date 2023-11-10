@@ -1,11 +1,12 @@
 use crate::Genie;
 use anchor_lang::prelude::*;
-use anchor_spl::metadata::{create_metadata_accounts_v3, CreateMetadataAccountsV3};
+use anchor_spl::metadata::{
+    create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3,
+};
 use anchor_spl::{
     metadata::Metadata,
     token::{Mint, Token},
 };
-use mpl_token_metadata::state::DataV2;
 
 #[derive(Accounts)]
 pub struct InitializeGenie<'info> {

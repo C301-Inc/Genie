@@ -10,7 +10,7 @@ pub use instructions::*;
 pub use state::*;
 pub use utils::*;
 
-declare_id!("DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK");
+declare_id!("14t9ipmpiRmQpPuizYwenHgp3y8jG5E4sezwDSS5dM7N");
 
 #[program]
 pub mod genie {
@@ -22,7 +22,7 @@ pub mod genie {
         inbox_metadata_uri: String,
         external_uri: String,
     ) -> Result<()> {
-        let genie_bump = *ctx.bumps.get("genie").unwrap();
+        let genie_bump = ctx.bumps.genie;
         instructions::initialize_genie(
             ctx,
             profile_metadata_uri,
@@ -34,7 +34,7 @@ pub mod genie {
     }
 
     pub fn initialize_profile(ctx: Context<InitializeProfile>) -> Result<()> {
-        let profile_bump = *ctx.bumps.get("profile").unwrap();
+        let profile_bump = ctx.bumps.profile;
         instructions::initialize_profile(ctx, profile_bump)?;
         Ok(())
     }
@@ -44,7 +44,7 @@ pub mod genie {
         platform: String,
         primary_key: String,
     ) -> Result<()> {
-        let inbox_bump = *ctx.bumps.get("inbox").unwrap();
+        let inbox_bump = ctx.bumps.inbox;
         instructions::initialize_inbox(ctx, platform, primary_key, inbox_bump)?;
         Ok(())
     }
@@ -56,6 +56,10 @@ pub mod genie {
 
     pub fn unregister_inbox_owner(ctx: Context<UnregisterInboxOwner>) -> Result<()> {
         instructions::unregister_inbox_owner(ctx)?;
+        Ok(())
+    }
+    pub fn send_token(ctx: Context<SendToken>, amount: u64) -> Result<()> {
+        instructions::send_token(ctx, amount)?;
         Ok(())
     }
 }

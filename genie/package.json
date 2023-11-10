@@ -27,6 +27,9 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "server/*"
+    "server/*",
+    "integrations/blockchain/svm/contract",
+    "integrations/blockchain/svm/ts/packages/svm-integration",
+    "integrations/blockchain/svm/ts/example/genie-nextjs-example"
   ]
 }
