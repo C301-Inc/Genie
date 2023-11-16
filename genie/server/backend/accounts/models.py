@@ -26,9 +26,8 @@ class SocialAccount(BaseModel):
         help_text="public key",
     )
 
-    secret_key: str = models.CharField(
+    secret_key: str = models.BinaryField(
         verbose_name="secret key",
-        max_length=400,
         blank=False,
         null=False,
         help_text="secret key",
@@ -58,9 +57,8 @@ class Inbox(BaseModel):
         help_text="public key",
     )
 
-    secret_key: str = models.CharField(
+    secret_key: str = models.BinaryField(
         verbose_name="secret key",
-        max_length=400,
         blank=False,
         null=False,
         help_text="secret key",
