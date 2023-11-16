@@ -2,8 +2,8 @@ import graphene
 from accounts.models import SocialAccount, Inbox
 from sns.models import SNS, SNSConnectionInfo
 from blockchain.models import Network
-from genie_backend.utils.api_calls import create_social_account_call, create_inbox_account_call
-from genie_backend.utils import errors
+from backend.utils.api_calls import create_social_account_call, create_inbox_account_call, register_inbox_account_call
+from backend.utils import errors
 
 
 class CreateSocialAccount(graphene.Mutation):
@@ -15,10 +15,10 @@ class CreateSocialAccount(graphene.Mutation):
 
     def mutate(self, info, nickname):
         nickname = nickname.strip()
-        data, sec_key = create_social_account_call()
+        data, pub_key, sec_key = create_social_account_call()
         if not data['success']:
             return CreateSocialAccount(success=False)
-        pub_key = data['data']['social_account_key']
+
         SocialAccount.objects.create(
             nickname=nickname,
             pub_key=pub_key,
@@ -41,11 +41,12 @@ class CreateInboxAccount(graphene.Mutation):
         sns = SNS.get_by_name(sns_name)
         account = SNSConnectionInfo.get_account(sns, discriminator)
         network = Network.get_by_name(network_name)
-        data, sec_key = create_inbox_account_call(sns_name.lower(), discriminator)
+        data, pub_key, sec_key = create_inbox_account_call(sns_name.lower(), discriminator)
         if not data['success']:
             return CreateInboxAccount(success=False)
-        pub_key = data['data']['inbox_key']
+
         register_inbox_account_call(account.secret_key, sec_key)
+
         Inbox.objects.create(
             pub_key=pub_key,
             secret_key=sec_key,
@@ -55,3 +56,8 @@ class CreateInboxAccount(graphene.Mutation):
         )
 
         return CreateInboxAccount(success=True, pub_key=pub_key)
+
+
+class AccountMutation(graphene.ObjectType):
+    create_social_account = CreateSocialAccount.Field()
+    create_inbox_account = CreateInboxAccount.Field()
