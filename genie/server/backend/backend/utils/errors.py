@@ -63,3 +63,15 @@ class CreateInboxAccountFailure(GenieGraphQLException):
     error_code = "A00006"
     message = "Serverless Call Failure!!!"
     error_msg = "Failed to call CreateInboxAccount"
+
+
+class RegisterInboxAccountFailure(GenieGraphQLException):
+    error_code = "A00007"
+    message = "Serverless Call Failure!!!"
+    error_msg = "Failed to call RegisterInboxAccount"
+
+
+class DecryptFailure(GenieGraphQLException):
+    error_code = "A00008"
+    message = "Decrypt Failure!!!"
+    error_msg = "Failed to decrypt encrypted message"
