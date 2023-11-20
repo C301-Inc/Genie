@@ -1,7 +1,9 @@
 from typing import List, Type
+
 from django.db import models
-from backend.utils.models import BaseModel
+
 from backend.utils import errors
+from backend.utils.models import BaseModel
 
 
 class SocialAccount(BaseModel):
@@ -31,6 +33,21 @@ class SocialAccount(BaseModel):
         blank=False,
         null=False,
         help_text="secret key",
+    )
+
+    lastfm_id: str = models.CharField(
+        verbose_name="last.fm id",
+        max_length=50,
+        blank=True,
+        null=True,
+        unique=True,
+        help_text="last.fm id",
+    )
+
+    did_connect_lastfm: bool = models.BooleanField(
+        verbose_name="did connect last.fm",
+        default=False,
+        help_text="did connect last.fm",
     )
 
     def __str__(self):
@@ -77,9 +94,7 @@ class Inbox(BaseModel):
     )
 
     @classmethod
-    def get_inbox(
-        cls: Type["Inbox"], sns, account, network
-        ) -> "Inbox":
+    def get_inbox(cls: Type["Inbox"], sns, account, network) -> "Inbox":
         try:
             return cls.objects.get(sns=sns, account=account, network=network)
         except cls.DoesNotExist as e:
