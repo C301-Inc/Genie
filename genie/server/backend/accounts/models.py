@@ -49,7 +49,7 @@ class SocialAccount(BaseModel):
         default=False,
         help_text="did connect last.fm",
     )
-
+    
     def __str__(self):
         return f"{self.nickname} - {self.pub_key}"
 
