@@ -16,6 +16,4 @@ pub enum GenieError {
     OwnerNotExist,
     #[msg("Auth already in auth list")]
     DuplicateAuth,
-    #[msg("Not Enough balance to send")]
-    NotEnoughBalance,
 }
