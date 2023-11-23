@@ -3,13 +3,20 @@ import graphene
 from django.conf import settings
 from django.db.models import QuerySet, Prefetch
 from accounts.models import Inbox
-from accounts.graphql.schema import InboxType, GetUserCoinTxHistoryReturnType, GetUserNFTTxHistoryReturnType, CoinTransactionHistoryType, NFTTransactionHistoryType
+from accounts.graphql.schema import InboxType, GetUserCoinTxHistoryReturnType, GetUserNFTTxHistoryReturnType, CoinTransactionHistoryType, NFTTransactionHistoryType, CheckUserAccountType
 from blockchain.models import Network, CoinTransactionHistory, NFTTransactionHistory
 from sns.models import SNS, SNSConnectionInfo
 from backend.utils import errors
 
 
 class AccountQuery(graphene.ObjectType):
+    check_user_account = graphene.NonNull(
+        CheckUserAccountType,
+        sns_name=graphene.String(required=True),
+        discriminator=graphene.String(required=True),
+        network_name=graphene.String(required=True),
+    )
+
     get_user_inbox_wallet = graphene.NonNull(
         InboxType,
         sns_name=graphene.String(required=True),
@@ -28,6 +35,26 @@ class AccountQuery(graphene.ObjectType):
         sns_name=graphene.String(required=True),
         discriminator=graphene.String(required=True),
     )
+
+    def resolve_check_user_account(
+        self, info: graphene.ResolveInfo, **kwargs
+    ):
+        sns_name = kwargs.get("sns_name")
+        discriminator = kwargs.get("discriminator")
+        network_name = kwargs.get("network_name")
+
+        sns = SNS.get_by_name(sns_name)
+
+        if not SNSConnectionInfo.check_account(sns, discriminator):
+            return CheckUserAccountType(social_account=False, inbox=False)
+        
+        network = Network.get_by_name(network_name)
+        account = SNSConnectionInfo.get_account(sns, discriminator)
+
+        if not Inbox.check_inbox(sns, account, network):
+            return CheckUserAccountType(social_account=True, inbox=False)
+
+        return CheckUserAccountType(social_account=True, inbox=True) 
 
     def resolve_get_user_inbox_wallet(
         self, info: graphene.ResolveInfo, **kwargs

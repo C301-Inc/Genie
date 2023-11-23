@@ -78,6 +78,17 @@ class SNSConnectionInfo(BaseModel):
             raise errors.AccountNotFound from e
 
     @classmethod
+    def check_account(
+        cls: Type["SNSConnectionInfo"], sns: SNS, discriminator: str
+    ) -> "SocialAccount":
+        account = cls.objects.filter(sns=sns, discriminator=discriminator)
+
+        if account.exists():
+            return True
+
+        return False    
+
+    @classmethod
     def get_by_sns_account(
         cls: Type["SNSConnectionInfo"], sns: SNS, account: SocialAccount
     ) -> "SNSConnectionInfo":
