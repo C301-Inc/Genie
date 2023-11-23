@@ -35,6 +35,15 @@ class SocialAccount(BaseModel):
         help_text="secret key",
     )
 
+    wallet_address: str = models.CharField(
+        verbose_name="wallet address",
+        max_length=100,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="wallet address",
+    )
+
     lastfm_id: str = models.CharField(
         verbose_name="last.fm id",
         max_length=50,
@@ -79,6 +88,15 @@ class Inbox(BaseModel):
         blank=False,
         null=False,
         help_text="secret key",
+    )
+
+    wallet_address: str = models.CharField(
+        verbose_name="wallet address",
+        max_length=100,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="wallet address",
     )
 
     account: "SocialAccount" = models.ForeignKey(

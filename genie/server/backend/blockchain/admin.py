@@ -14,15 +14,16 @@ class NetworkAdmin(BaseModelAdmin):
 
 
 class CoinAdmin(BaseModelAdmin):
-    list_display: tuple[str, str, str, str] = (
+    list_display: tuple[str, str, str, str, str] = (
         "id",
         "network",
         "name",
         "ticker",
+        "mint_address",
     )
 
     list_display_links: tuple[str] = ("id",)
-    search_fields: tuple[str, str, str] = ("network__name", "name", "ticker")
+    search_fields: tuple[str, str, str, str] = ("network__name", "name", "ticker", "mint_address")
 
 
 class CollectionAdmin(BaseModelAdmin):
