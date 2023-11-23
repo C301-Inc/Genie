@@ -10,6 +10,7 @@ intents = discord.Intents.all()
 
 cogs: list = [
     "functions.guide",
+    "functions.register",
 ]
 
 client = commands.Bot(
