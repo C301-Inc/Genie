@@ -1,9 +1,7 @@
 from typing import List, Type
-
 from django.db import models
-
-from backend.utils import errors
 from backend.utils.models import BaseModel
+from backend.utils import errors
 
 
 class SocialAccount(BaseModel):
@@ -28,37 +26,14 @@ class SocialAccount(BaseModel):
         help_text="public key",
     )
 
-    secret_key: str = models.BinaryField(
+    secret_key: str = models.CharField(
         verbose_name="secret key",
+        max_length=400,
         blank=False,
         null=False,
         help_text="secret key",
     )
 
-    wallet_address: str = models.CharField(
-        verbose_name="wallet address",
-        max_length=100,
-        blank=False,
-        null=False,
-        unique=True,
-        help_text="wallet address",
-    )
-
-    lastfm_id: str = models.CharField(
-        verbose_name="last.fm id",
-        max_length=50,
-        blank=True,
-        null=True,
-        unique=True,
-        help_text="last.fm id",
-    )
-
-    did_connect_lastfm: bool = models.BooleanField(
-        verbose_name="did connect last.fm",
-        default=False,
-        help_text="did connect last.fm",
-    )
-    
     def __str__(self):
         return f"{self.nickname} - {self.pub_key}"
 
@@ -83,20 +58,12 @@ class Inbox(BaseModel):
         help_text="public key",
     )
 
-    secret_key: str = models.BinaryField(
+    secret_key: str = models.CharField(
         verbose_name="secret key",
+        max_length=400,
         blank=False,
         null=False,
         help_text="secret key",
-    )
-
-    wallet_address: str = models.CharField(
-        verbose_name="wallet address",
-        max_length=100,
-        blank=False,
-        null=False,
-        unique=True,
-        help_text="wallet address",
     )
 
     account: "SocialAccount" = models.ForeignKey(
@@ -112,7 +79,9 @@ class Inbox(BaseModel):
     )
 
     @classmethod
-    def get_inbox(cls: Type["Inbox"], sns, account, network) -> "Inbox":
+    def get_inbox(
+        cls: Type["Inbox"], sns, account, network
+        ) -> "Inbox":
         try:
             return cls.objects.get(sns=sns, account=account, network=network)
         except cls.DoesNotExist as e:

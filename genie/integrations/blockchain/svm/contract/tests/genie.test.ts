@@ -178,28 +178,27 @@ describe("genie", () => {
       .rpc({ skipPreflight: true });
     console.log("Your transaction signature", tx);
   });
-  // it("unregister inbox owner ", async () => {
-  //   const tx = await program.methods
-  //     .unregisterInboxOwner()
-  //     .accounts({
-  //       payer,
-  //       inbox,
-  //       initialAuthInbox,
-  //       profile,
-  //       initialAuthProfile: initialAuthProfile,
-  //     })
-  //     .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
-  //     .rpc({ skipPreflight: true });
-  //   console.log("Your transaction signature", tx);
-  // });
+  it("unregister inbox owner ", async () => {
+    const tx = await program.methods
+      .unregisterInboxOwner()
+      .accounts({
+        payer,
+        inbox,
+        initialAuthInbox,
+        profile,
+        initialAuthProfile: initialAuthProfile,
+      })
+      .signers([initialAuthProfileKeypair, initialAuthInboxKeypair])
+      .rpc({ skipPreflight: true });
+    console.log("Your transaction signature", tx);
+  });
 
   describe("test with token", () => {
     const tokenMintKeypair = web3.Keypair.generate();
     const tokenMint = tokenMintKeypair.publicKey;
-    const senderTokenAccount = getAssociatedTokenAddressSync(
+    const newAuthTokenAccount = getAssociatedTokenAddressSync(
       tokenMint,
-      inbox,
-      true
+      newAuth
     );
     const decimal = 0;
     const mintAmount = "10";
@@ -254,13 +253,13 @@ describe("genie", () => {
       );
       const createAssociatedTokenIx = createAssociatedTokenAccountInstruction(
         payer,
-        senderTokenAccount,
-        inbox,
+        newAuthTokenAccount,
+        newAuth,
         tokenMint
       );
       const mintToIx = createMintToCheckedInstruction(
         tokenMint,
-        senderTokenAccount,
+        newAuthTokenAccount,
         payer,
         Number(mintAmount),
         decimal
@@ -287,11 +286,10 @@ describe("genie", () => {
         .accounts({
           payer,
           mint: tokenMint,
-          senderProfileAuth: initialAuthProfile,
           senderProfile: profile,
-          senderInbox: inbox,
-          senderTokenAccount: senderTokenAccount,
-          receiver: receiverInbox,
+          senderWallet: newAuth,
+          senderTokenAccount: newAuthTokenAccount,
+          receiverInbox,
           receiverTokenAccount: receiverInboxTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
@@ -308,7 +306,7 @@ describe("genie", () => {
         .signers([
           tokenMintKeypair,
           initialAuthReceiverInboxKeypair,
-          initialAuthProfileKeypair,
+          newAuthKeypair,
         ])
         .rpc({ skipPreflight: true })
         .catch((err) => console.log(err));

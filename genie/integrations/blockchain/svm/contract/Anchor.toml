@@ -1,19 +1,15 @@
 [features]
 seeds = false
 skip-lint = false
-
 [programs.localnet]
-genie = "14t9ipmpiRmQpPuizYwenHgp3y8jG5E4sezwDSS5dM7N"
-
-[programs.devnet]
-genie = "14t9ipmpiRmQpPuizYwenHgp3y8jG5E4sezwDSS5dM7N"
+genie = "DcFiN7rdT7MRJJgRLJYcriTn2NgemPn6iqz9X2uqw4fK"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
-wallet = "~/.config/solana/devnet.json"
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
 
 [test.validator]
 url = "https://api.mainnet-beta.solana.com"

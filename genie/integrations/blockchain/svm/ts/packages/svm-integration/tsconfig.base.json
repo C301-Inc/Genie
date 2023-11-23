@@ -18,11 +18,6 @@
     "typeRoots": [
       "types/",
       "../../node_modules/@types"
-    ],
-    "paths": {
-      "@solana/web3.js": [
-        "../../node_modules/@solana/web3.js/lib"
-      ]
-    }
+    ] 
   }
 }

@@ -1,0 +1,6 @@
+{
+    "name" : "@genie-web3/monorepo",
+    "workspaces" : [
+        "packages/*"
+    ]
+}
