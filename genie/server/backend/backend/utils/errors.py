@@ -75,3 +75,15 @@ class DecryptFailure(GenieGraphQLException):
     error_code = "A00008"
     message = "Decrypt Failure!!!"
     error_msg = "Failed to decrypt encrypted message"
+
+
+class GetInboxTokenFailure(GenieGraphQLException):
+    error_code = "A00009"
+    message = "Get Inbox Token Failure!!!"
+    error_msg = "Failed to get inbox token list"
+
+
+class GetInboxNFTFailure(GenieGraphQLException):
+    error_code = "A00010"
+    message = "Get Inbox NFT Failure!!!"
+    error_msg = "Failed to get inbox NFT list"
