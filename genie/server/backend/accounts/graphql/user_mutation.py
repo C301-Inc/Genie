@@ -151,9 +151,31 @@ class SendToken(graphene.Mutation):
         return SendToken(success=True, tx_hash=tx_hash)
 
 
+class SendNFT(graphene.Mutation):
+    success = graphene.NonNull(graphene.Boolean)
+    tx_hash = graphene.NonNull(graphene.String)
+
+    class Arguments:
+        sns_name = graphene.String(required=True)
+        discriminator = graphene.String(required=True)
+        network_name = graphene.String(required=True)
+        receiver = graphene.String(required=True)
+        mint_address = graphene.String(required=True)
+
+    def mutate(self, info, sns_name, discriminator, network_name, receiver, mint_address):
+        sns = SNS.get_by_name(sns_name)
+        account = SNSConnectionInfo.get_account(sns, discriminator)
+        network = Network.get_by_name(network_name)
+        inbox = Inbox.get_inbox(sns=sns, account=account, network=network)
+        tx_hash = send_token_call(account.secret_key, inbox.secret_key, receiver, mint_address, 1)
+
+        return SendNFT(success=True, tx_hash=tx_hash)
+
+
 class AccountMutation(graphene.ObjectType):
     create_social_account = CreateSocialAccount.Field()
     create_inbox_account = CreateInboxAccount.Field()
     send_token = SendToken.Field()
+    send_nft = SendNFT.Field()
     get_user_tokens = GetUserTokens.Field()
     get_user_nfts = GetUserNFTs.Field()
