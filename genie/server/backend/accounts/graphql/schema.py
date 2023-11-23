@@ -4,10 +4,15 @@ from blockchain.models import Network, Coin, Collection, NFT, CoinTransactionHis
 from graphene_django.types import DjangoObjectType
 
 
+class CheckUserAccountType(graphene.ObjectType):
+    social_account = graphene.NonNull(graphene.Boolean)
+    inbox = graphene.NonNull(graphene.Boolean)
+
+
 class InboxType(DjangoObjectType):
     class Meta:
         model = Inbox
-        fields = ("pub_key", "network")
+        fields = ("wallet_address", "network")
 
 
 class CoinType(DjangoObjectType):
