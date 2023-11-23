@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "accounts",
     "blockchain",
     "sns",
-    "track",
 ]
 
 GRAPHENE = {
