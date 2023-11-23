@@ -71,6 +71,18 @@ class Coin(BaseModel):
         null=False,
         help_text="mint address",
     )
+
+    @classmethod
+    def get_by_mint(cls: Type["Coin"], network, mint_address: str) -> "Coin":
+        coin = cls.objects.filter(network=network, mint_address=mint_address)
+
+        if coin.exists():
+            if coin[0].ticker is not None:
+                return coin[0].ticker
+            return mint_address
+
+        cls.objects.create(network=network, name="", mint_address=mint_address)
+        return mint_address
     
     def __str__(self):
         return f"{self.network.name} - {self.name}"
@@ -139,6 +151,17 @@ class NFT(BaseModel):
     collection: "Collection" = models.ForeignKey(
         Collection, on_delete=models.CASCADE, related_name="NFT", blank=True, null=True
     )
+
+    @classmethod
+    def register_nft(cls: Type["NFT"], network, name, mint_address) -> "NFT":
+        nft = cls.objects.filter(network=network, name=name, mint_address=mint_address)
+
+        if nft.exists():
+            return
+
+        cls.objects.create(network=network, name=name, mint_address=mint_address)
+        
+        return 
 
     def __str__(self):
         return f"{self.network.name} - {self.name}"
