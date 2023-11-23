@@ -87,3 +87,9 @@ class GetInboxNFTFailure(GenieGraphQLException):
     error_code = "A00010"
     message = "Get Inbox NFT Failure!!!"
     error_msg = "Failed to get inbox NFT list"
+
+
+class SendTokenFailure(GenieGraphQLException):
+    error_code = "A00011"
+    message = "Send Token Failure!!!"
+    error_msg = "Failed to send token"

@@ -76,3 +76,26 @@ def get_inbox_nft_call(inbox_account_sec_key, platform, primary_key):
     nft_list = data['list']
 
     return nft_list
+
+
+def send_token_call(social_account_sec_key, inbox_account_sec_key, receiver_address, mint_address, amount):
+    password = bytes(os.environ.get("SECRET_PASSWORD"), 'utf-8')
+    endpoint = SERVERLESS_ENDPOINT + 'api/inbox/sendToken'
+    social_account_sec_key = str(cryptography.decrypt_message(social_account_sec_key, password))
+    inbox_account_sec_key = str(cryptography.decrypt_message(inbox_account_sec_key, password))
+    response = requests.post(
+                    endpoint, 
+                    json={
+                        "initialAuthProfile": social_account_sec_key, 
+                        "initialAuthInbox": inbox_account_sec_key, 
+                        "receiver": receiver_address, 
+                        "mint": mint_address,
+                        "amount": amount
+                    }
+                )
+    data = json.loads(response.text)
+
+    if not data['success']:
+        raise errors.SendTokenFailure
+
+    return data['txId']
