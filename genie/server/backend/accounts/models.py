@@ -118,5 +118,11 @@ class Inbox(BaseModel):
         except cls.DoesNotExist as e:
             raise errors.InboxNotFound from e
 
+    @classmethod
+    def check_inbox(cls: Type["Inbox"], sns, account, network) -> "Inbox":
+        inbox = cls.objects.filter(sns=sns, account=account, network=network)
+
+        return inbox.exists()
+
     def __str__(self):
         return f"{self.account.nickname}({self.sns.name}) {self.pub_key}"
