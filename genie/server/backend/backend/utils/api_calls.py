@@ -15,11 +15,11 @@ def create_social_account_call():
     encrypted_sec_key = cryptography.encrypt_message(sec_key_bytes, password)
     response = requests.post(endpoint, json={"initialAuth": sec_key_bytes})
     data = json.loads(response.text)
-    
+
     if not data['success']:
         raise errors.CreateSocialAccountFailure()
 
-    return data, pub_key, encrypted_sec_key
+    return data, pub_key, encrypted_sec_key, data['key']
 
 def create_inbox_account_call(platform, primary_key):
     keypair = Keypair()
@@ -34,7 +34,7 @@ def create_inbox_account_call(platform, primary_key):
     if not data['success']:
         raise errors.CreateInboxAccountFailure()
 
-    return data, pub_key, encrypted_sec_key
+    return data, pub_key, encrypted_sec_key, data['key']
 
 def register_inbox_account_call(social_account_sec_key, inbox_account_sec_key):
     password = bytes(os.environ.get("SECRET_PASSWORD"), 'utf-8')
@@ -48,3 +48,31 @@ def register_inbox_account_call(social_account_sec_key, inbox_account_sec_key):
         raise errors.RegisterInboxAccountFailure
 
     return
+
+def get_inbox_token_call(inbox_account_sec_key, platform, primary_key):
+    password = bytes(os.environ.get("SECRET_PASSWORD"), 'utf-8')
+    endpoint = SERVERLESS_ENDPOINT + 'api/inbox/getTokens'
+    inbox_account_sec_key = str(cryptography.decrypt_message(inbox_account_sec_key, password))
+    response = requests.post(endpoint, json={"initialAuth": inbox_account_sec_key, "platform": platform, "primaryKey": primary_key})
+    data = json.loads(response.text)
+
+    if not data['success']:
+        raise errors.GetInboxTokenFailure
+
+    token_list = data['list']
+
+    return token_list
+
+def get_inbox_nft_call(inbox_account_sec_key, platform, primary_key):
+    password = bytes(os.environ.get("SECRET_PASSWORD"), 'utf-8')
+    endpoint = SERVERLESS_ENDPOINT + 'api/inbox/getNfts'
+    inbox_account_sec_key = str(cryptography.decrypt_message(inbox_account_sec_key, password))
+    response = requests.post(endpoint, json={"initialAuth": inbox_account_sec_key, "platform": platform, "primaryKey": primary_key})
+    data = json.loads(response.text)
+
+    if not data['success']:
+        raise errors.GetInboxTokenFailure
+
+    nft_list = data['list']
+
+    return nft_list
