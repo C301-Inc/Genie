@@ -33,6 +33,15 @@ class SocialAccount(BaseModel):
         help_text="secret key",
     )
 
+    wallet_address: str = models.CharField(
+        verbose_name="wallet address",
+        max_length=100,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="wallet address",
+    )
+
     def __str__(self):
         return f"{self.nickname} - {self.pub_key}"
 
@@ -62,6 +71,15 @@ class Inbox(BaseModel):
         blank=False,
         null=False,
         help_text="secret key",
+    )
+
+    wallet_address: str = models.CharField(
+        verbose_name="wallet address",
+        max_length=100,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="wallet address",
     )
 
     account: "SocialAccount" = models.ForeignKey(
