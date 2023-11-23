@@ -1,8 +1,8 @@
 import graphene
 from accounts.models import SocialAccount, Inbox
 from sns.models import SNS, SNSConnectionInfo
-from blockchain.models import Network, Coin
-from backend.utils.api_calls import create_social_account_call, create_inbox_account_call, register_inbox_account_call, get_inbox_token_call
+from blockchain.models import Network, Coin, NFT
+from backend.utils.api_calls import create_social_account_call, create_inbox_account_call, register_inbox_account_call, get_inbox_token_call, get_inbox_nft_call
 from backend.utils import errors
 
 
@@ -64,6 +64,8 @@ class GetUserAssets(graphene.Mutation):
     success = graphene.NonNull(graphene.Boolean)
     token_list = graphene.List(graphene.String)
     value_list = graphene.List(graphene.Float)
+    nft_list = graphene.List(graphene.String)
+    nft_value_list = graphene.List(graphene.Int)
 
     class Arguments:
         sns_name = graphene.String(required=True)
@@ -76,6 +78,7 @@ class GetUserAssets(graphene.Mutation):
         inbox_accounts = Inbox.objects.filter(account=account)
         network = Network.get_by_name(network_name)
         token_dict = {}
+        nft_dict = {}
 
         for inbox_account in inbox_accounts:
             token_list = get_inbox_token_call(inbox_account.secret_key, sns_name.lower(), discriminator)
@@ -87,7 +90,23 @@ class GetUserAssets(graphene.Mutation):
                 else:
                     token_dict[ticker] += float(token['amount']) / (10 ** float(token['decimals']))
 
-        return GetUserAssets(success=True, token_list=token_dict.keys(), value_list=token_dict.values())
+            nft_list = get_inbox_nft_call(inbox_account.secret_key, sns_name.lower(), discriminator)
+            for nft in nft_list:
+                NFT.register_nft(network=network, name=nft['name'], mint_address=nft['mint'])
+                
+                if nft['name'] not in nft_dict.keys():
+                    nft_dict[nft['name']] = 1
+                else:
+                    nft_dict[nft['name']] += 1
+
+
+        return GetUserAssets(
+                success=True, 
+                token_list=token_dict.keys(), 
+                value_list=token_dict.values(),
+                nft_list=nft_dict.keys(),
+                nft_value_list=nft_dict.values(),
+                )
 
 
 class AccountMutation(graphene.ObjectType):
