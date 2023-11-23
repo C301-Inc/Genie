@@ -2,7 +2,7 @@ import graphene
 from accounts.models import SocialAccount, Inbox
 from sns.models import SNS, SNSConnectionInfo
 from blockchain.models import Network, Coin, NFT
-from backend.utils.api_calls import create_social_account_call, create_inbox_account_call, register_inbox_account_call, get_inbox_token_call, get_inbox_nft_call
+from backend.utils.api_calls import create_social_account_call, create_inbox_account_call, register_inbox_account_call, get_inbox_token_call, get_inbox_nft_call, send_token_call
 from backend.utils import errors
 
 
@@ -109,7 +109,30 @@ class GetUserAssets(graphene.Mutation):
                 )
 
 
+class SendToken(graphene.Mutation):
+    success = graphene.NonNull(graphene.Boolean)
+    tx_hash = graphene.NonNull(graphene.String)
+
+    class Arguments:
+        sns_name = graphene.String(required=True)
+        discriminator = graphene.String(required=True)
+        network_name = graphene.String(required=True)
+        receiver = graphene.String(required=True)
+        mint_address = graphene.String(required=True)
+        amount = graphene.Float(required=True)
+
+    def mutate(self, info, sns_name, discriminator, network_name, receiver, mint_address, amount):
+        sns = SNS.get_by_name(sns_name)
+        account = SNSConnectionInfo.get_account(sns, discriminator)
+        network = Network.get_by_name(network_name)
+        inbox = Inbox.get_inbox(sns=sns, account=account, network=network)
+        tx_hash = send_token_call(account.secret_key, inbox.secret_key, receiver, mint_address, amount)
+
+        return SendToken(success=True, tx_hash=tx_hash)
+
+
 class AccountMutation(graphene.ObjectType):
     create_social_account = CreateSocialAccount.Field()
     create_inbox_account = CreateInboxAccount.Field()
     get_user_assets = GetUserAssets.Field()
+    send_token = SendToken.Field()
