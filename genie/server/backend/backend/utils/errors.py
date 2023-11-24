@@ -93,3 +93,9 @@ class SendTokenFailure(GenieGraphQLException):
     error_code = "A00011"
     message = "Send Token Failure!!!"
     error_msg = "Failed to send token"
+
+
+class RegisterSNSFailure(GenieGraphQLException):
+    error_code = "A00012"
+    message = "Register SNS Failure!!!"
+    error_msg = "Failed to register SNS"

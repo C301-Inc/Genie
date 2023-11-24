@@ -5,7 +5,7 @@ from graphene_django.types import DjangoObjectType
 
 
 class CheckUserAccountType(graphene.ObjectType):
-    social_account = graphene.NonNull(graphene.Boolean)
+    social_account_pub_key = graphene.NonNull(graphene.String)
     inbox = graphene.NonNull(graphene.Boolean)
 
 

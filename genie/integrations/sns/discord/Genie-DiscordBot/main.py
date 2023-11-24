@@ -1,5 +1,4 @@
 import os
-
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -9,7 +8,11 @@ description = """ Genie bot """
 
 intents = discord.Intents.all()
 
-cogs: list = ["functions.guide", "functions.streaming"]
+cogs: list = [
+            "functions.guide", 
+            "functions.streaming",
+            "functions.register"
+            ]
 
 client = commands.Bot(
     command_prefix="!",

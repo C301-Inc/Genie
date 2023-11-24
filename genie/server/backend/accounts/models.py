@@ -58,6 +58,15 @@ class SocialAccount(BaseModel):
         default=False,
         help_text="did connect last.fm",
     )
+
+    @classmethod
+    def get_by_pub_key(cls: Type["SocialAccount"], pub_key: str) -> "SocialAccount":
+        try:
+            account: "SocialAccount" = cls.objects.get(pub_key=pub_key)
+        except cls.DoesNotExist as e:
+            raise errors.AccountNotFound from e
+
+        return account
     
     def __str__(self):
         return f"{self.nickname} - {self.pub_key}"
