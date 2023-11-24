@@ -201,8 +201,8 @@ class NFTTransactionHistory(BaseModel):
         Server,
         on_delete=models.CASCADE,
         related_name="nft_tx_histories",
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
     )
 
     nft: "NFT" = models.ForeignKey(
@@ -251,8 +251,8 @@ class CoinTransactionHistory(BaseModel):
         Server,
         on_delete=models.CASCADE,
         related_name="coin_tx_histories",
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
     )
 
     coin: "Coin" = models.ForeignKey(
