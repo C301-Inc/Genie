@@ -46,15 +46,15 @@ class AccountQuery(graphene.ObjectType):
         sns = SNS.get_by_name(sns_name)
 
         if not SNSConnectionInfo.check_account(sns, discriminator):
-            return CheckUserAccountType(social_account=False, inbox=False)
+            return CheckUserAccountType(social_account_pub_key="", inbox=False)
         
         network = Network.get_by_name(network_name)
         account = SNSConnectionInfo.get_account(sns, discriminator)
 
         if not Inbox.check_inbox(sns, account, network):
-            return CheckUserAccountType(social_account=True, inbox=False)
+            return CheckUserAccountType(social_account_pub_key=account.pub_key, inbox=False)
 
-        return CheckUserAccountType(social_account=True, inbox=True) 
+        return CheckUserAccountType(social_account_pub_key=account.pub_key, inbox=True) 
 
     def resolve_get_user_inbox_wallet(
         self, info: graphene.ResolveInfo, **kwargs

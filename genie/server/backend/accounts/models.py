@@ -34,6 +34,39 @@ class SocialAccount(BaseModel):
         help_text="secret key",
     )
 
+    wallet_address: str = models.CharField(
+        verbose_name="wallet address",
+        max_length=100,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="wallet address",
+    )
+
+    lastfm_id: str = models.CharField(
+        verbose_name="last.fm id",
+        max_length=50,
+        blank=True,
+        null=True,
+        unique=True,
+        help_text="last.fm id",
+    )
+
+    did_connect_lastfm: bool = models.BooleanField(
+        verbose_name="did connect last.fm",
+        default=False,
+        help_text="did connect last.fm",
+    )
+   
+    @classmethod
+    def get_by_pub_key(cls: Type["SocialAccount"], pub_key: str) -> "SocialAccount":
+        try:
+            account: "SocialAccount" = cls.objects.get(pub_key=pub_key)
+        except cls.DoesNotExist as e:
+            raise errors.AccountNotFound from e
+        
+        return account
+
     def __str__(self):
         return f"{self.nickname} - {self.pub_key}"
 
