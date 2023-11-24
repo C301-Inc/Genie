@@ -105,15 +105,17 @@ class Server(BaseModel):
     class Meta:
         verbose_name: str = "Server"
         verbose_name_plural: str = "Server"
-        constraints: list[models.UniqueConstraint] = [
-            models.UniqueConstraint(
-                fields=["sns", "name"],
-                name="unique (sns, server)",
-            ),
-        ]
 
     sns: "SNS" = models.ForeignKey(
         SNS, on_delete=models.PROTECT, related_name="servers"
+    )
+
+    server_id: str = models.CharField(
+        verbose_name="SNS server id",
+        max_length=100,
+        unique=True,
+        blank=False,
+        null=False,
     )
 
     name: str = models.CharField(
@@ -124,6 +126,14 @@ class Server(BaseModel):
         help_text="SNS server name (ex. ATIV, NOIS, ...)",
     )
 
+    @classmethod
+    def get_by_server_id(
+        cls: Type["Server"], server_id
+    ):
+        try:
+            return cls.objects.get(server_id=server_id)
+        except cls.DoesNotExist as e:
+            raise errors.ServerNotFound from e
 
     def __str__(self):
         return f"{self.sns.name} - {self.name}"

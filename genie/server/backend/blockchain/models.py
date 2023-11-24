@@ -74,6 +74,15 @@ class Coin(BaseModel):
 
     @classmethod
     def get_by_mint(cls: Type["Coin"], network, mint_address: str) -> "Coin":
+        try:
+            coin = cls.objects.get(network=network, mint_address=mint_address)
+        except:
+            raise errors.CoinNotFound
+
+        return coin
+    
+    @classmethod
+    def get_ticker_by_mint(cls: Type["Coin"], network, mint_address: str) -> "Coin":
         coin = cls.objects.filter(network=network, mint_address=mint_address)
 
         if coin.exists():
@@ -153,6 +162,15 @@ class NFT(BaseModel):
     )
 
     @classmethod
+    def get_by_mint(cls: Type["NFT"], network, mint_address: str) -> "NFT":
+        try:
+            nft = cls.objects.get(network=network, mint_address=mint_address)
+        except:
+            raise errors.NFTNotFound
+
+        return nft
+
+    @classmethod
     def register_nft(cls: Type["NFT"], network, name, mint_address) -> "NFT":
         nft = cls.objects.filter(network=network, name=name, mint_address=mint_address)
 
@@ -201,8 +219,8 @@ class NFTTransactionHistory(BaseModel):
         Server,
         on_delete=models.CASCADE,
         related_name="nft_tx_histories",
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
     )
 
     nft: "NFT" = models.ForeignKey(
@@ -251,8 +269,8 @@ class CoinTransactionHistory(BaseModel):
         Server,
         on_delete=models.CASCADE,
         related_name="coin_tx_histories",
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
     )
 
     coin: "Coin" = models.ForeignKey(

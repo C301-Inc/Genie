@@ -1,7 +1,7 @@
 import graphene
 from accounts.models import SocialAccount, Inbox
-from sns.models import SNS, SNSConnectionInfo
-from blockchain.models import Network, Coin, NFT
+from sns.models import SNS, SNSConnectionInfo, Server
+from blockchain.models import Network, Coin, NFT, CoinTransactionHistory, NFTTransactionHistory
 from backend.utils.api_calls import create_social_account_call, create_inbox_account_call, register_inbox_account_call, get_inbox_token_call, get_inbox_nft_call, send_token_call
 from backend.utils import errors
 
@@ -80,7 +80,7 @@ class GetUserTokens(graphene.Mutation):
         for inbox_account in inbox_accounts:
             token_list = get_inbox_token_call(inbox_account.secret_key, sns_name.lower(), discriminator)
             for token in token_list:
-                ticker = Coin.get_by_mint(network, token['mint'])
+                ticker = Coin.get_ticker_by_mint(network, token['mint'])
 
                 if ticker not in token_dict.keys():
                     token_dict[ticker] = float(token['amount']) / (10 ** float(token['decimals']))
@@ -140,13 +140,29 @@ class SendToken(graphene.Mutation):
         receiver = graphene.String(required=True)
         mint_address = graphene.String(required=True)
         amount = graphene.Float(required=True)
+        server_id = graphene.String(required=True)
 
-    def mutate(self, info, sns_name, discriminator, network_name, receiver, mint_address, amount):
+    def mutate(self, info, sns_name, discriminator, network_name, receiver, mint_address, amount, server_id):
         sns = SNS.get_by_name(sns_name)
         account = SNSConnectionInfo.get_account(sns, discriminator)
         network = Network.get_by_name(network_name)
         inbox = Inbox.get_inbox(sns=sns, account=account, network=network)
         tx_hash = send_token_call(account.secret_key, inbox.secret_key, receiver, mint_address, amount)
+
+        coin = Coin.get_by_mint(network, mint_address)
+        receiver_inbox = Inbox.get_by_address(receiver)
+        
+        if sns_name == "Discord":
+            try:
+                server = Server.get_by_server_id(server_id)
+            except:
+                server = None
+        else:
+            server = None
+         
+        CoinTransactionHistory.objects.create(
+            from_inbox=inbox, to_inbox=receiver_inbox, tx_hash=tx_hash, server=server, coin=coin, amount=amount
+        )
 
         return SendToken(success=True, tx_hash=tx_hash)
 
@@ -161,13 +177,29 @@ class SendNFT(graphene.Mutation):
         network_name = graphene.String(required=True)
         receiver = graphene.String(required=True)
         mint_address = graphene.String(required=True)
+        server_id = graphene.String(required=True)
 
-    def mutate(self, info, sns_name, discriminator, network_name, receiver, mint_address):
+    def mutate(self, info, sns_name, discriminator, network_name, receiver, mint_address, server_id):
         sns = SNS.get_by_name(sns_name)
         account = SNSConnectionInfo.get_account(sns, discriminator)
         network = Network.get_by_name(network_name)
         inbox = Inbox.get_inbox(sns=sns, account=account, network=network)
         tx_hash = send_token_call(account.secret_key, inbox.secret_key, receiver, mint_address, 1)
+
+        nft = NFT.get_by_mint(network, mint_address)
+        receiver_inbox = Inbox.get_by_address(receiver)
+
+        if sns_name == "Discord":
+            try:
+                server = Server.get_by_server_id(server_id)
+            except:
+                server = None
+        else:
+            server = None
+
+        NFTTransactionHistory.objects.create(
+            from_inbox=inbox, to_inbox=receiver_inbox, tx_hash=tx_hash, server=server, nft=nft
+        )
 
         return SendNFT(success=True, tx_hash=tx_hash)
 

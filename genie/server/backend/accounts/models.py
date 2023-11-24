@@ -133,5 +133,12 @@ class Inbox(BaseModel):
 
         return inbox.exists()
 
+    @classmethod
+    def get_by_address(cls: Type["Inbox"], wallet_address) -> "Inbox":
+        try:
+            return cls.objects.get(wallet_address=wallet_address)
+        except cls.DoesNotExist as e:
+            raise errors.InboxNotFound from e
+
     def __str__(self):
         return f"{self.account.nickname}({self.sns.name}) {self.pub_key}"
