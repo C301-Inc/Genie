@@ -99,3 +99,15 @@ class RegisterSNSFailure(GenieGraphQLException):
     error_code = "A00012"
     message = "Register SNS Failure!!!"
     error_msg = "Failed to register SNS"
+
+
+class ServerNotFound(GenieGraphQLException):
+    error_code = "A00013"
+    message = "Does Not Exist!!!"
+    error_msg = "Server not found. Please check again."
+
+
+class RegisterServerFailure(GenieGraphQLException):
+    error_code = "A00014"
+    message = "Register Server Failure!!!"
+    error_msg = "Failed to register server"

@@ -1,6 +1,6 @@
 import requests
 import graphene
-from sns.models import SNS, SNSConnectionInfo
+from sns.models import SNS, SNSConnectionInfo, Server
 from blockchain.models import Network
 from accounts.models import SocialAccount
 from backend.utils import errors
@@ -43,6 +43,33 @@ class RegisterSNS(graphene.Mutation):
             raise errors.RegisterSNSFailure from Exception
 
         return RegisterSNS(success=True)
+
+
+class RegisterServer(graphene.Mutation):
+    success: bool = graphene.NonNull(graphene.Boolean)
+
+    class Arguments:
+        sns_name = graphene.String(required=True)
+        server_id = graphene.String(required=True)
+        name = graphene.String(required=True)
+
+    def mutate(
+        self,
+        info: graphene.ResolveInfo,
+        sns_name: str,
+        server_id: str,
+        name: str,
+    ) -> graphene.Mutation:
+        sns: "SNS" = SNS.get_by_name(sns_name)
+
+        try:
+            Server.objects.create(
+            sns=sns, server_id=server_id, name=name
+        )
+        except Exception:
+            raise errors.RegisterServerFailure
+
+        return RegisterServer(success=True)
 
 
 class SNSMutation(graphene.ObjectType):
