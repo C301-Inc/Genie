@@ -111,3 +111,21 @@ class RegisterServerFailure(GenieGraphQLException):
     error_code = "A00014"
     message = "Register Server Failure!!!"
     error_msg = "Failed to register server"
+
+
+class InboxNotFound(GenieGraphQLException):
+    error_code = "A00015"
+    message = "Does Not Exist!!!"
+    error_msg = "Inbox does not exist. Please check again."
+
+
+class CoinNotFound(GenieGraphQLException):
+    error_code = "A00016"
+    message = "Does Not Exist!!!"
+    error_msg = "Coin does not exist. Please check again."
+
+
+class NFTNotFound(GenieGraphQLException):
+    error_code = "A00017"
+    message = "Does Not Exist!!!"
+    error_msg = "NFT does not exist. Please check again."
