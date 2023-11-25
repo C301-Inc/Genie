@@ -11,7 +11,8 @@ intents = discord.Intents.all()
 cogs: list = [
             "functions.guide", 
             "functions.streaming",
-            "functions.register"
+            "functions.register",
+            "functions.send"
             ]
 
 client = commands.Bot(

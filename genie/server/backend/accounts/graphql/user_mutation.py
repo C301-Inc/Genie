@@ -62,8 +62,9 @@ class CreateInboxAccount(graphene.Mutation):
 
 class GetUserTokens(graphene.Mutation):
     success = graphene.NonNull(graphene.Boolean)
-    token_list = graphene.List(graphene.String)
-    value_list = graphene.List(graphene.Float)
+    token_ticker_list = graphene.List(graphene.String)
+    token_address_list = graphene.List(graphene.String)
+    token_value_list = graphene.List(graphene.Float)
 
     class Arguments:
         sns_name = graphene.String(required=True)
@@ -73,31 +74,31 @@ class GetUserTokens(graphene.Mutation):
     def mutate(self, info, sns_name, discriminator, network_name):
         sns = SNS.get_by_name(sns_name)
         account = SNSConnectionInfo.get_account(sns, discriminator)
-        inbox_accounts = Inbox.objects.filter(account=account)
         network = Network.get_by_name(network_name)
-        token_dict = {}
+        inbox_account = Inbox.get_inbox(sns=sns, account=account, network=network)
+        token_ticker_list = []
+        token_address_list = []
+        token_value_list = []
 
-        for inbox_account in inbox_accounts:
-            token_list = get_inbox_token_call(inbox_account.secret_key, sns_name.lower(), discriminator)
-            for token in token_list:
-                ticker = Coin.get_ticker_by_mint(network, token['mint'])
-
-                if ticker not in token_dict.keys():
-                    token_dict[ticker] = float(token['amount']) / (10 ** float(token['decimals']))
-                else:
-                    token_dict[ticker] += float(token['amount']) / (10 ** float(token['decimals']))
+        token_list = get_inbox_token_call(inbox_account.secret_key, sns_name.lower(), discriminator)
+        for token in token_list:
+            coin = Coin.get_or_create_by_mint(network, token['mint'], token['decimals'])
+            token_ticker_list.append(coin.ticker)
+            token_address_list.append(coin.mint_address)
+            token_value_list.append(float(token['amount']) / (10 ** float(token['decimals'])))
 
         return GetUserTokens(
                 success=True, 
-                token_list=token_dict.keys(), 
-                value_list=token_dict.values(),
-                )
+                token_ticker_list=token_ticker_list, 
+                token_address_list=token_address_list,
+                token_value_list=token_value_list
+        )
 
 
 class GetUserNFTs(graphene.Mutation):
     success = graphene.NonNull(graphene.Boolean)
-    nft_list = graphene.List(graphene.String)
-    nft_value_list = graphene.List(graphene.Int)
+    nft_name_list = graphene.List(graphene.String)
+    nft_address_list = graphene.List(graphene.String)
 
     class Arguments:
         sns_name = graphene.String(required=True)
@@ -107,26 +108,22 @@ class GetUserNFTs(graphene.Mutation):
     def mutate(self, info, sns_name, discriminator, network_name):
         sns = SNS.get_by_name(sns_name)
         account = SNSConnectionInfo.get_account(sns, discriminator)
-        inbox_accounts = Inbox.objects.filter(account=account)
         network = Network.get_by_name(network_name)
-        nft_dict = {}
+        inbox_account = Inbox.get_inbox(sns=sns, account=account, network=network)
+        nft_name_list = []
+        nft_address_list = []
 
-        for inbox_account in inbox_accounts:
-            nft_list = get_inbox_nft_call(inbox_account.secret_key, sns_name.lower(), discriminator)
-            for nft in nft_list:
-                NFT.register_nft(network=network, name=nft['name'], mint_address=nft['mint'])
-                
-                if nft['name'] not in nft_dict.keys():
-                    nft_dict[nft['name']] = 1
-                else:
-                    nft_dict[nft['name']] += 1
-
+        nft_list = get_inbox_nft_call(inbox_account.secret_key, sns_name.lower(), discriminator)
+        for nft in nft_list:
+            NFT.register_nft(network=network, name=nft['name'], mint_address=nft['mint'])
+            nft_name_list.append(nft['name'])
+            nft_address_list.append(nft['mint'])
 
         return GetUserNFTs(
                 success=True, 
-                nft_list=nft_dict.keys(),
-                nft_value_list=nft_dict.values(),
-                )
+                nft_name_list=nft_name_list,
+                nft_address_list=nft_address_list,
+        )
 
 
 class SendToken(graphene.Mutation):
@@ -147,9 +144,10 @@ class SendToken(graphene.Mutation):
         account = SNSConnectionInfo.get_account(sns, discriminator)
         network = Network.get_by_name(network_name)
         inbox = Inbox.get_inbox(sns=sns, account=account, network=network)
+        coin = Coin.get_by_mint(network, mint_address)
+        amount = amount * (10**coin.decimal)
         tx_hash = send_token_call(account.secret_key, inbox.secret_key, receiver, mint_address, amount)
 
-        coin = Coin.get_by_mint(network, mint_address)
         receiver_inbox = Inbox.get_by_address(receiver)
         
         if sns_name == "Discord":

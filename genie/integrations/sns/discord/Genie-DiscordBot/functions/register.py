@@ -36,7 +36,7 @@ class Register(commands.Cog):
             inbox_address = create_inbox_account(from_id, "Solana")
             
             await ctx.reply(
-                f":genie:: Hey {from_name}! Your inbox wallet is registered .\nAddress: {inbox_address}.\nThis message will be deleted after 10 seconds.",
+                f":genie:: Hey {from_name}! Your inbox wallet is registered.\nAddress: {inbox_address}.\nThis message will be deleted after 10 seconds.",
             delete_after=10.0,
             )
 
@@ -46,7 +46,7 @@ class Register(commands.Cog):
             inbox_address = create_inbox_account(from_id, "Solana")
 
             await ctx.reply(
-                f":genie:: Hey {from_name}! Your genie wallet is registered .\n**Inbox Address: {inbox_address}**\nThis message will be deleted after 10 seconds.",
+                f":genie:: Hey {from_name}! Your genie wallet is registered.\n**Inbox Address: {inbox_address}**\nThis message will be deleted after 10 seconds.",
             delete_after=10.0,
             )
 
