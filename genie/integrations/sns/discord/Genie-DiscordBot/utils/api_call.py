@@ -230,3 +230,121 @@ def register_sns(network_name, pub_key, discord_id, nickname):
         return None
 
     return
+
+
+def get_user_tokens(discord_id, network_name):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        mutation {open_bracket}
+            getUserTokens (
+                discriminator: "{discord_id}"
+                networkName: "{network_name}"
+                snsName: "Discord"
+            ) {open_bracket}
+                success
+                tokenValueList
+                tokenTickerList
+                tokenAddressList
+            {close_bracket}
+        {close_bracket}
+        """
+
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        token_value_list = data['data']['getUserTokens']['tokenValueList']
+        token_ticker_list = data['data']['getUserTokens']['tokenTickerList']
+        token_address_list = data['data']['getUserTokens']['tokenAddressList']
+    except:
+        return None
+
+    return token_value_list, token_ticker_list, token_address_list
+
+def get_user_nfts(discord_id, network_name):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        mutation {open_bracket}
+            getUserNfts (
+                discriminator: "{discord_id}"
+                networkName: "{network_name}"
+                snsName: "Discord"
+            ) {open_bracket}
+                success
+                nftNameList
+                nftAddressList
+            {close_bracket}
+        {close_bracket}
+        """
+
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        nft_name_list = data['data']['getUserNfts']['nftNameList']
+        nft_address_list = data['data']['getUserNfts']['nftAddressList']
+    except:
+        return None
+
+    return nft_name_list, nft_address_list
+
+def send_token(discord_id, network_name, mint_address, amount, to_address, server_id):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        mutation {open_bracket}
+            sendToken (
+                discriminator: "{discord_id}"
+                networkName: "{network_name}"
+                mintAddress: "{mint_address}"
+                receiver: "{to_address}"
+                snsName: "Discord"
+                amount: {amount}
+                serverId: "{server_id}"
+            ) {open_bracket}
+                success
+                txHash
+            {close_bracket}
+        {close_bracket}
+        """
+
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        tx_hash = data['data']['sendToken']['txHash']
+    except:
+        return None
+
+    return tx_hash
+
+def send_nft(discord_id, network_name, mint_address, to_address, server_id):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        mutation {open_bracket}
+            sendNft (
+                discriminator: "{discord_id}"
+                networkName: "{network_name}"
+                mintAddress: "{mint_address}"
+                receiver: "{to_address}"
+                snsName: "Discord"
+                serverId: "{server_id}"
+            ) {open_bracket}
+                success
+                txHash
+            {close_bracket}
+        {close_bracket}
+        """
+
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        tx_hash = data['data']['sendNft']['txHash']
+    except:
+        return None
+
+    return tx_hash
