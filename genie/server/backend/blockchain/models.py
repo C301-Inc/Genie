@@ -72,6 +72,12 @@ class Coin(BaseModel):
         help_text="mint address",
     )
 
+    decimal: int = models.IntegerField(
+        verbose_name="decimal",
+        blank=False,
+        null=False,
+    )
+
     @classmethod
     def get_by_mint(cls: Type["Coin"], network, mint_address: str) -> "Coin":
         try:
@@ -82,16 +88,14 @@ class Coin(BaseModel):
         return coin
     
     @classmethod
-    def get_ticker_by_mint(cls: Type["Coin"], network, mint_address: str) -> "Coin":
+    def get_or_create_by_mint(cls: Type["Coin"], network, mint_address: str, decimal: int) -> "Coin":
         coin = cls.objects.filter(network=network, mint_address=mint_address)
 
         if coin.exists():
-            if coin[0].ticker is not None:
-                return coin[0].ticker
-            return mint_address
+            return coin[0]
 
-        cls.objects.create(network=network, name="", mint_address=mint_address)
-        return mint_address
+        coin = cls.objects.create(network=network, name="", ticker=mint_address, mint_address=mint_address, decimal=decimal)
+        return coin
     
     def __str__(self):
         return f"{self.network.name} - {self.name}"
