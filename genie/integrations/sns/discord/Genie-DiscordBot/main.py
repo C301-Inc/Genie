@@ -13,7 +13,8 @@ cogs: list = [
             "functions.streaming",
             "functions.register",
             "functions.send",
-            "functions.dashboard"
+            "functions.dashboard",
+            "functions.withdraw"
             ]
 
 client = commands.Bot(
