@@ -14,7 +14,8 @@ cogs: list = [
             "functions.register",
             "functions.send",
             "functions.dashboard",
-            "functions.withdraw"
+            "functions.withdraw",
+            "functions.deposit"
             ]
 
 client = commands.Bot(
