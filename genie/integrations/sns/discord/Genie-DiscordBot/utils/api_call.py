@@ -348,3 +348,67 @@ def send_nft(discord_id, network_name, mint_address, to_address, server_id):
         return None
 
     return tx_hash
+
+def get_user_coin_tx_history(discord_id):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        query {open_bracket}
+            getUserCoinTxHistory (
+                discriminator: "{discord_id}"
+                snsName: "Discord"
+            ) {open_bracket}
+                coinTxList {open_bracket}
+                    isSent
+                    coin {open_bracket}
+                        ticker
+                    {close_bracket}
+                    amount
+                    txHash
+                    targetSnsDiscriminator
+                {close_bracket}
+            {close_bracket}
+        {close_bracket}
+        """
+  
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        coin_tx = data['data']['getUserCoinTxHistory']['coinTxList']
+    except:
+        return None
+
+    return coin_tx
+
+def get_user_nft_tx_history(discord_id):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        query {open_bracket}
+            getUserNftTxHistory (
+                discriminator: "{discord_id}"
+                snsName: "Discord"
+            ) {open_bracket}
+                nftTxList {open_bracket}
+                    isSent
+                    NFT {open_bracket}
+                        name
+                        mintAddress
+                    {close_bracket}
+                    txHash
+                    targetSnsDiscriminator
+                {close_bracket}
+            {close_bracket}
+        {close_bracket}
+        """
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        nft_tx = data['data']['getUserNftTxHistory']['nftTxList']
+    except:
+        return None
+
+    return nft_tx
+
