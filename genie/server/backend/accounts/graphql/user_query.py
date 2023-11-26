@@ -83,14 +83,14 @@ class AccountQuery(graphene.ObjectType):
         coin_tx_list = []
 
         for inbox in inbox_list:
-            txs = inbox.from_coin_tx.all() | inbox.to_coin_tx.all()
+            txs = inbox.from_coin_tx.all().order_by("-created_at")[:10] | inbox.to_coin_tx.all().order_by("-created_at")[:10]
             
             for tx in txs:
                 is_sent = tx.from_inbox == inbox
                 target_inbox = tx.to_inbox if is_sent else tx.from_inbox
                 target_account = target_inbox.account
                 target_sns_info = SNSConnectionInfo.get_by_sns_account(sns=target_inbox.sns, account=target_account)
-                target_sns_nickname = target_sns_info.handle
+                target_sns_discriminator = target_sns_info.discriminator
 
                 coin_tx_list.append(
                     CoinTransactionHistoryType(
@@ -98,8 +98,7 @@ class AccountQuery(graphene.ObjectType):
                         is_sent=is_sent,
                         tx_hash=tx.tx_hash,
                         amount=tx.amount,
-                        target_sns_nickname=target_sns_nickname,
-                        target_social_nickname=target_account.nickname,
+                        target_sns_discriminator=target_sns_discriminator,
                         created_at=str(tx.created_at),
                     )
                 )
@@ -118,7 +117,7 @@ class AccountQuery(graphene.ObjectType):
         nft_tx_list = []
 
         for inbox in inbox_list:
-            txs = inbox.from_nft_tx.all() | inbox.to_nft_tx.all()
+            txs = inbox.from_nft_tx.all().order_by("-created_at")[:10] | inbox.to_nft_tx.all().order_by("-created_at")[:10]
 
             for tx in txs:
                 is_sent = tx.from_inbox == inbox
@@ -126,15 +125,14 @@ class AccountQuery(graphene.ObjectType):
                 target_account = target_inbox.account
 
                 target_sns_info = SNSConnectionInfo.get_by_sns_account(sns=target_inbox.sns, account=target_account)
-                target_sns_nickname = target_sns_info.handle
+                target_sns_discriminator = target_sns_info.discriminator
 
                 nft_tx_list.append(
                     NFTTransactionHistoryType(
                         NFT=tx.nft,
                         is_sent=is_sent,
                         tx_hash=tx.tx_hash,
-                        target_sns_nickname=target_sns_nickname,
-                        target_social_nickname=target_account.nickname,
+                        target_sns_discriminator=target_sns_discriminator,
                         created_at=str(tx.created_at),
                     )
                 )
