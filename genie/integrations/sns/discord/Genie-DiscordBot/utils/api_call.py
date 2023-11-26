@@ -412,3 +412,61 @@ def get_user_nft_tx_history(discord_id):
 
     return nft_tx
 
+def withdraw_token(discord_id, network_name, mint_address, amount, to_address):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        mutation {open_bracket}
+            withdrawToken (
+                discriminator: "{discord_id}"
+                networkName: "{network_name}"
+                mintAddress: "{mint_address}"
+                receiver: "{to_address}"
+                snsName: "Discord"
+                amount: {amount}
+            ) {open_bracket}
+                success
+                txHash
+            {close_bracket}
+        {close_bracket}
+        """
+
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        tx_hash = data['data']['withdrawToken']['txHash']
+    except:
+        return None
+
+    return tx_hash
+
+def withdraw_nft(discord_id, network_name, mint_address, to_address):
+    open_bracket = '{'
+    close_bracket = '}'
+    body = f"""
+        mutation {open_bracket}
+            withdrawNft (
+                discriminator: "{discord_id}"
+                networkName: "{network_name}"
+                mintAddress: "{mint_address}"
+                receiver: "{to_address}"
+                snsName: "Discord"
+            ) {open_bracket}
+                success
+                txHash
+            {close_bracket}
+        {close_bracket}
+        """
+
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
+    data = json.loads(response.text)
+    
+    try:
+        tx_hash = data['data']['withdrawNft']['txHash']
+    except:
+        return None
+
+    return tx_hash
+
+
