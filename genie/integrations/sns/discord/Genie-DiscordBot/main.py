@@ -12,7 +12,8 @@ cogs: list = [
             "functions.guide", 
             "functions.streaming",
             "functions.register",
-            "functions.send"
+            "functions.send",
+            "functions.dashboard"
             ]
 
 client = commands.Bot(
