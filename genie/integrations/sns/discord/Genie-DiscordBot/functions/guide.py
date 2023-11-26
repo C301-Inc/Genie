@@ -18,7 +18,8 @@ class Guide(commands.Cog):
             "**!register**\nCommand to create Genie wallet.",
             "**!dashboard**\nCommand to display the assets and tx history.",
             "**!send**\nCommand to send assets. Type '!send token/nft @username' to use.",
-            "**!withdraw**\nCommand to withdraw assets in Genie wallet. Type '!withdraw [wallet address]' to use.",
+            "**!withdraw**\nCommand to withdraw assets in Genie wallet. Type '!withdraw token/nft [wallet address]' to use.",
+            "**!deposit**\nCommand to deposit assets in Genie wallet. Type '!deposit' to use."
         ]
 
         ret_text = '\n'.join(command_description)
