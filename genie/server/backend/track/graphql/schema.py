@@ -22,6 +22,6 @@ class TrackType(DjangoObjectType):
         fields = ("title", "artist", "album")
 
 
-class TrackCountType(DjangoObjectType):
+class TrackCountType(graphene.ObjectType):
     track = graphene.NonNull(TrackType)
     streaming_count = graphene.NonNull(graphene.Int)

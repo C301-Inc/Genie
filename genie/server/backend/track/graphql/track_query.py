@@ -27,8 +27,14 @@ class TrackQuery(graphene.ObjectType):
 
         for track in track_list:
             streaming_count = lastfm.get_playcount(
-                lastfm_id=account.lastfm_id, track_title=track.title
+                lastfm_id=account.lastfm_id,
+                track_title=track.title,
+                artist_name=track.artist.name,
             )
+
+            if streaming_count is None:
+                continue
+
             track_count_list.append(
                 TrackCountType(track=track, streaming_count=streaming_count)
             )
