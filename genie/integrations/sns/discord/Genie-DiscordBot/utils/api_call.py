@@ -20,7 +20,7 @@ def get_track_counts(discord_id):
         {close_bracket}
         """
 
-    response = requests.post(url=BACKEND_ENDPOINT, json={"query": body})
+    response = requests.post(url=os.environ['BACKEND_ENDPOINT'], json={"query": body})
 
     data = json.loads(response.text)
 

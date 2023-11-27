@@ -18,7 +18,7 @@ class Streaming(commands.Cog):
 
         return_str_list = []
         for track_count in track_counts:
-            return_str_linst.append(
+            return_str_list.append(
                 f"{track_count['track']['title']} : {track_count['streamingCount']}"
             )
 
