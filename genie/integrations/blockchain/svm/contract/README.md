@@ -27,7 +27,6 @@ anchor deploy
 
 Distributed under the Apache 2.0 license. See ``LICENSE`` for more information.
 
-[https://github.com/c301hoon/github-link](https://github.com/c301hoon/)
 
 ## Contributing
 
