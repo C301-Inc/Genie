@@ -6,7 +6,7 @@
   <!-- <a href="https://githubalm.netlify.app">Demo</a> -->
 </div>
 
-<h1 align="center">Github Alm</h1>
+<h1 align="center">Genie</h1>
 
 <p align="center">
   <img alt="Github top language" src="https://img.shields.io/github/languages/top/C301-Inc/Genie?color=56BEB8">
